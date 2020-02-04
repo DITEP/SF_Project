@@ -1,6 +1,7 @@
 version: "3"
 services:
   backend:
+    build: ./backend
     image: sf_project_backend
     links:
       - $SQL_SERVICENAME
@@ -22,6 +23,7 @@ services:
 
 
   frontend:
+    build: ./frontend
     image: sf_project_frontend
     ports:
       - $FRONTEND_PORT:$FRONTEND_PORT
@@ -29,6 +31,7 @@ services:
       - .env
 
   periodic-backup:
+    build: ./db/backup
     image: sf_project_periodic-backup
     container_name: sf_project_mysqlbackup
     links:
