@@ -1,0 +1,20 @@
+#form-container{
+  width : 70%
+}
+
+.log-in-form {
+  margin-bottom: 25px;
+}
+
+.login-error {
+  margin-top: 20px;
+  color: maroon;
+}
+
+.form-group{
+  text-align: left;
+}
+
+.hidden {
+  display: none !important;
+}

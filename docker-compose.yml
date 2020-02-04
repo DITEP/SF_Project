@@ -1,0 +1,43 @@
+version: "3"
+services:
+  backend:
+    image: sf_project_backend
+    links:
+      - $SQL_SERVICENAME
+    ports:
+      - $BACKEND_PORT:$BACKEND_PORT
+    env_file:
+      - .env
+
+
+  db:
+    image: mysql:5.7
+    container_name: sf_project_mysql
+    ports:
+      - $SQL_PORT:3306
+    env_file:
+      - .env
+    volumes:
+      - ./db/init/:/docker-entrypoint-initdb.d/:ro
+
+
+  frontend:
+    image: sf_project_frontend
+    ports:
+      - $FRONTEND_PORT:$FRONTEND_PORT
+    env_file:
+      - .env
+
+  periodic-backup:
+    image: sf_project_periodic-backup
+    container_name: sf_project_mysqlbackup
+    links:
+      - $SQL_SERVICENAME
+    env_file:
+      - .env
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./db/data:/dbbackup
+    command: crond -f -d 8
+    restart: always
+

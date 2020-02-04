@@ -1,0 +1,146 @@
+{
+  "languages": {
+    "header": "Languages",
+    "english": "English",
+    "french": "French"
+  },
+  "header": {
+    "info": "More Info",
+    "prediction": "Predict",
+    "patients" : "Patients",
+    "showprofile": "Show profile",
+    "showdeleted": "Deleted Patients",
+    "showlogout": "Logout",
+    "brandlink": "Screen Failure",
+    "networkerror": "Network Error, Please try again later.",
+    "finishingjob": "You left prediction page while a job was being processed. You can find the result on ",
+    "finishingjobanchor": "Patient Page",
+    "userinqueue": "You left prediction page while in queue for a job. Your job has been deleted, you can submit a new one on ",
+    "userinqueueanchor" : "Prediction Page"
+  },
+  "home": {
+    "title": "HAN-Based Prediction tool",
+    "tooldescription":"Our prediction tool helps medics in their decision process for inclusion of patient in phase 1 of therapeutic trials based solely on their inclusion consultation report. It uses a Hierarchical Attention Network (HAN), a certain type of Artificial Neural Network very handy for natural language analysis. Here is how it works.",
+    "HANdescriptiontitle":"How does an HAN work ?",
+
+    "HANintroduction": " As explain in the previous paragraph, an HAN is an articial neural network. As such, it is an artifical intelligence tool that is first train on a specific task to perform it as a human being. Here, the task is the binary classification of a report, the HAN answer yes or no to the question : 'Should we introduce this patient in this therapeutic trial ?'. This decision is made based only on text data, that he will read like a human being. Indeed, HAN have the particularity of analysing text word after word, sentence after sentence. It is due to its architecture in 2 layers : a word encoder and a sentence encoder. To this we add an input layer that processes and format the inputs to the network and an output layer that gives the prediction.",
+    "HANarchitecturetitle":"HAN Architecture",
+    "HANarchitecture":"Translation in Progress.",
+    "HANencodertitle":"Encoding Layers",
+    "HANencoderdescription1":"Translation in Progress",
+    "HANencoderdescription2":""
+  },
+  "login": {
+    "username": "Username",
+    "usernameplaceholder": "Enter your username",
+    "password": "Password",
+    "passwordplaceholder": "Enter your password",
+    "passwordcredentialerror": "Your username or password is not correct.",
+    "othererror": "Something went wrong. Please try again later.",
+    "loginbutton": "Submit",
+    "registerlink": "Don't have an account yet? Click here to sign up",
+    "forgotpasswordlink": "Forgot your password? Click here to reset"
+  },
+  "register": {
+    "emailaddress": "Email address",
+    "emailplaceholder": "Type in the email address you wish to use",
+    "emailhelper": "We'll never share your email with anyone else.",
+    "username": "Username",
+    "usernameplaceholder": "Please type your username name here",
+    "usernamehelper": "Used for login and display purpose",
+    "password": "Password",
+    "passwordplaceholder": "Type in your new password",
+    "repeatpassword": "Repeat password",
+    "repeatpasswordplaceholder": "Type in your new password once again",
+    "passwordmismatcherror": "Your two passwords are not the same,",
+    "passwordinsecureerror": "Password must be at least 10 characters.",
+    "emailtakenerror": "The email you want to ue is already taken",
+    "othererror": "Something went wrong. Try again later.",
+    "submitbutton": "Submit",
+    "loginlinkbottom": "Already have an account? Click here to log in!"
+  },
+  "messages": {
+    "passwordchangesuccess": "Your password has been changed. Please log back in with your new credentials.",
+    "emailchangesuccess": "Your email has been changed. Please log back in with your new credentials.",
+    "notauthorized": "You have to be logged in to view this page.",
+    "registrationsuccess": "Your account has been created! Please log in with your credentials.",
+    "newpredictionsuccess": "You successfully submitted a new prediction!"
+  },
+  "prediction": {
+    "pagetitle" : "Prediction",
+    "description": "Please enter the report manually down below, by copying it from the Ambre database for example. Then, press 'Submit' to start the prediction",
+    "formtitle": "Copy the report here",
+    "textplaceholder": "Text of the report...",
+    "clearbutton": "Clear",
+    "submitbutton": "Submit",
+    "cancelbutton": "Cancel",
+    "probability":"Probability of Screen Fail :",
+    "popupheader": "Additional Information Required",
+    "popupniplabel": "NIP of the patient",
+    "popupnipplaceholder": "Enter NIP here, in the form 1111-11111AA",
+    "popupdatecr": "Date of the report",
+    "nipformaterror": "NIP format is wrong, should be 1111-11111AA",
+    "predictionerror": "Error during prediction, please try again later",
+    "useralreadyinqueue":"You already have a job in queue, please wait until it finishes before starting again. If you left this page before the end of the prediction, you can find the result in the Patient page.",
+    "reportindb": "This report is already in the database, please check the patient page if you require more info.",
+    "vizualization":{
+        "title": "Model Attention Visualization",
+        "description1":"Here the text is broken down into sentences and the number next to each sentence is its attention value, that is how important this sentence is in the computation of the probability.",
+        "description2":"The most important sentences have been colored in red and should be payed extra care.",
+        "tablesentence": "Sentences as seen by the algorithm",
+        "tablesentenceattention": "Attention value"
+    }
+  },
+  "profile": {
+    "changemail": "Change email address",
+    "emailinput": "New email address",
+    "emailplaceholder": "Type in your new email address",
+    "emailrepeatinput": "Repeat email address",
+    "emailrepeatplaceholder": "Please type your new email again",
+    "changemailsubmit": "Submit",
+    "changepassword": "Change password",
+    "oldpassword": "Current password",
+    "oldpasswordplaceholder": "Please type in your current password",
+    "newpassword": "New password",
+    "newpasswordplaceholder": "Please type in your new password",
+    "repeatpassword": "Repeat password",
+    "repeatpasswordplaceholder": "Please repat your new password",
+    "changepasswordsubmit": "Submit",
+    "emailmismatcherror": "The two email addresses are not the same.",
+    "emailusederror": "The email address is already taken.",
+    "oldpasswordwrongerror": "Your current password was incorrect.",
+    "passwordmismatcherror": "Your new password and the repeated password are not the same!",
+    "passwordnotsecureerror": "Password must be at least 10 characters.",
+    "othererror": "An error occured. Please try again later.",
+    "emailchangeinfo": "Please note that you will need to use you new email address to sign into your account"
+  },
+  "history": {
+    "predictionrunning": "Prediction is running",
+    "noresult": "To be determined",
+    "explanationtab": "Explanation",
+    "explanationcontent": "The tabs on the left side of the screen are the names of all the predictions that you have started so far. Click on the nams to get moe information about them!",
+    "searchbar": "Type to filter by prediction title"
+  },
+  "patients": {
+    "tableempty": "No Patients in the database",
+    "fetchingdata": "Fetching data, please wait",
+    "tablenip": "NIP",
+    "tabledate": "Date of the report",
+    "tableresult": "Predicted probability of SF",
+    "tabletrueresult": "Actual Result (Please add information when available)",
+    "tableusername": "Owner",
+    "tablecollapser": "Press to show text",
+    "popupdeleteheader": "Confirm that you want to delete",
+    "popupdeleteexplanation": "If you delete this item from the queue, it won't be executed anymore. Furthermore, it will be removed from your history  and the file connected to it will also be deleted. ",
+    "popupdeleteconfirm": "Confirm",
+    "popupdeletecancel": "Cancel",
+    "authdeletionerror": "You are not authorized to delete this prediction.",
+    "popupdeleteerror": "The deletion of the prediction has been cancelled.",
+    "popupdeletesuccess": "The prediction has been deleted successfully.",
+    "lackinginformation": "Please complete the actual result (if known) for the entries with following NIP: "
+  },
+  "networkerror": {
+    "title": "Network Error",
+    "description": "Server is currently unavailable. Please try again later. If the problem persists, please contact administrator."
+  }
+}

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+NOW=$(date '+%d')
+BACKUP_FOLDER=/dbbackup
+FILE=$BACKUP_FOLDER/backup-$NOW.sql
+
+mysqldump -h $SQL_SERVICENAME -u $SQL_USERNAME -p$MYSQL_ROOT_PASSWORD --databases $DATABASE_NAME > $FILE

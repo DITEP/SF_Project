@@ -1,0 +1,83 @@
+.table-container{
+  max-width:None;
+  width:100%;
+}
+
+.tabletext{
+  text-align:left;
+  font-family: "Avenir";
+}
+
+.table{
+  font-size:large;
+}
+
+.attentionbutton{
+  margin-top:2rem;
+}
+
+
+.heat {
+  align-items: center;
+  justify-content: center;
+}
+
+.vizualization-table{
+  color:black;
+}
+
+.vizualization-table thead{
+  color: #00b5ad;
+  font-weight: 300;
+}
+
+.vizualization-table td{
+  border-top:none;
+  vertical-align:inherit;
+}
+
+
+.tablesentence{
+  width:70%;
+  font-family: "Avenir";
+}
+
+.tableattention{
+  width:20%;
+  border-radius:5px;
+}
+
+.tablesentencenumber{
+  width:10%
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pres-text{
+  margin-top:1rem;
+  font-size: 1.2rem;
+  color:gray;
+  font-weight: 500;
+}
+
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #00b5ad;
+  border-radius: 50%;
+  width: 6rem;
+  height: 6rem;
+  animation: spin 2s linear infinite;
+}
+
+#loader{
+  margin:auto;
+}
+
+.check{
+  cursor: pointer;
+  margin-right: 0.8rem;
+  margin-left: 0.3rem;
+}
