@@ -1,5 +1,5 @@
 # Install process
-##Simple Way
+## Simple Way
 Simply git clone this repository and enter following command at the root of the project. (docker and docker-compose need to be intalled and user must be part of the docker group)
 
 	$ docker-compose up -d. 
@@ -18,11 +18,61 @@ following docker images are required:
 Those images will automatically build if you have same set up as the git repository one. Once the image are built, you can remove the all the files appart from those ones :
 
 -docker-compose.yml
--db/data folder below docker-compose.yml
+
+-db/data and db/init folder below docker-compose.yml
+
 -.env
 
 Beware that if you later remove the images, you will not be able to rebuild them unless you clone the repository again.
 You will still be able to remove the containers and run them again from the images.
+
+## Install and add preexisting data to database
+You can start the server with a specific database other than the void one set in this repository. Changing the architecture of the db might require a lot of changes (in the backend server), hence it is adviced to fit your database to the one from this project. Here are the tables and their contents :
+
+	+---------------------+
+	| queue               |
+	| report              |
+	| user                |
+	+---------------------+
+
+	queue
+	+--------+-------------+------+-----+---------+----------------+
+	| Field  | Type        | Null | Key | Default | Extra          |
+	+--------+-------------+------+-----+---------+----------------+
+	| id     | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| userid | int(11)     | NO   | MUL | NULL    |                |
+	| text   | text        | NO   |     | NULL    |                |
+	| nip    | varchar(20) | NO   |     | NULL    |                |
+	| datecr | date        | NO   |     | NULL    |                |
+	+--------+-------------+------+-----+---------+----------------+
+
+	report
+	+------------+-------------+------+-----+---------+----------------+
+	| Field      | Type        | Null | Key | Default | Extra          |
+	+------------+-------------+------+-----+---------+----------------+
+	| id         | int(11)     | NO   | PRI | NULL    | auto_increment |
+	| userid     | int(11)     | NO   | MUL | NULL    |                |
+	| text       | text        | NO   |     | NULL    |                |
+	| nip        | varchar(20) | NO   |     | NULL    |                |
+	| result     | float       | YES  |     | NULL    |                |
+	| datecr     | date        | NO   |     | NULL    |                |
+	| screenfail | tinyint(1)  | YES  |     | NULL    |                |
+	| display    | tinyint(1)  | NO   |     | NULL    |                |
+	+------------+-------------+------+-----+---------+----------------+
+
+
+	user
+	+----------+--------------+------+-----+---------+----------------+
+	| Field    | Type         | Null | Key | Default | Extra          |
+	+----------+--------------+------+-----+---------+----------------+
+	| id       | int(11)      | NO   | PRI | NULL    | auto_increment |
+	| username | varchar(80)  | NO   | UNI | NULL    |                |
+	| password | varchar(255) | NO   |     | NULL    |                |
+	| email    | varchar(120) | NO   | UNI | NULL    |                |
+	+----------+--------------+------+-----+---------+----------------+
+
+Once you have a SQL database fit to this layout, simply mysqldump it into some .sql file and put it inside db/init folder before running docker-compose up. All files inside init are run when the db docker starts. Make sure to put a USE sfproject at the start of your .sql file, or to change the $DATABASE_NAME environment variable in .env
+
 
 # Managing running server
 ## Database
@@ -36,3 +86,8 @@ Otherwise, one can connect to the database container through the adress/port spe
 Full logs can be accessed by setting current directory to the root of the server and entering command (user must have docker rights):
 
 	$ docker-compose log
+
+# Encountered issue
+
+## Flask debug mode
+There seem to be an issue between tensorflow>=1.15.0 and flask debug mode. So you should not turn flask debug mode to true(in run.py), or you can and then downgrade tensorflow (1.14.0 worked before). See https://github.com/tensorflow/tensorflow/issues/34607 for more infos.
