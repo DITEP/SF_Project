@@ -1,5 +1,11 @@
 # Install process
-## Requirements
+##Simple Way
+Simply git clone this repository and enter following command at the root of the project. (docker and docker-compose need to be intalled and user must be part of the docker group)
+
+	$ docker-compose up -d. 
+
+## Minimum requirements
+If you do not wish to clone all the repository, or want the minimum amount of files after installation, here are the minimal requirements on the system
 ### System requirements
 -Docker and docker-compose are required, and the install must be done by a user from the docker group.
 ### Images requirement
@@ -9,22 +15,14 @@ following docker images are required:
 -sf_project_periodic-backup
 -mysql:5.7 (this one will be automatically downloaded in case it is not in the system's docker image)
 
-those images can be built if the original files were given with the images.
-For this, simply add a build command in the docker-compose.yml and specify the right folder ("./backend" for the backend container, "./frontend" for the frontend one and "./db/backup" for the backup one).
-Be sure to have the Dockerfile inside those folder and the image should automatically build with the command docker-compose up.
+Those images will automatically build if you have same set up as the git repository one. Once the image are built, you can remove the all the files appart from those ones :
 
-### Files requirement
--docker-compose.yml file at the root of the project
--.env file at same level
--a db folder containing two other folders : data and init. data should be empty while init should contain an init file with the creation of $DATABASE_NAME database.
--any other volumes detailed in the docker-compose file.
+-docker-compose.yml
+-db/data folder below docker-compose.yml
+-.env
 
-## Install
-Change directory to the root of the project where docker-compose is located. Enter the command :
-
-	$ docker-compose up -d. 
-
-Server is now installed and runs on adress and port specified in the .env.
+Beware that if you later remove the images, you will not be able to rebuild them unless you clone the repository again.
+You will still be able to remove the containers and run them again from the images.
 
 # Managing running server
 ## Database
