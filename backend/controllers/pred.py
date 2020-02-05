@@ -20,7 +20,7 @@ def pred(mytext):
     from nltk.tokenize import sent_tokenize
 
 
-    out_file = 'trainedmlp_oldnew_20epochs0.0033lr0.003l2.hd5'
+    model_file = 'trainedmlp_oldnew_20epochs0.0033lr0.003l2.hd5'
     tokenizer_file = 'HAN_manual_epochword_tokeniser'
     embeddings_file = "w2v_reports_128.vec"
     data_dir = "./controllers/data"
@@ -121,7 +121,7 @@ def pred(mytext):
     #################
     # model
     #################
-    han_model = load_model(os.path.join(data_dir,out_file),
+    han_model = load_model(os.path.join(data_dir,model_file),
                            custom_objects={'HAN': HAN,'AttentionLayer': AttentionLayer})
     
     #input must be an array                           
