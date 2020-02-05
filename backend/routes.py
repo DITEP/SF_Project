@@ -148,8 +148,8 @@ def compute(text):
         #data is given back as part of a list of one element that we need to extract
         #We're also converting data into list for use in JSON
         result = float(result)
-        sentence_attentions = sentence_attentions[0].tolist()
-        word_attentions = word_attentions[0].tolist()
+        sentence_attentions = sentence_attentions.tolist()
+        word_attentions = word_attentions.tolist()
         return (result, sentences,sentence_attentions,word_attentions)
     except Exception as error:
         print("Unexpected Error: {}".format(error))
