@@ -1,8 +1,19 @@
+<h1 align="center"> Phase 1 Screening Prediction API </h1>
+
+# What is it ?
+We have develloped a Hierarchical Attention Model (HAN) to predict the inclusion of patient in phase one clinical trials in oncology. That is, to predict whether the patient will pass screening and DLT (Dose Limiting Toxicity) period. An article is under submission, the code is open-source in this repo.
+
+This user-friendly web interface can help doctors use this model to perform predictions.
+
 # Install process
 ## Simple Way
 Simply git clone this repository and enter following command at the root of the project. (docker and docker-compose need to be intalled and user must be part of the docker group)
 
 	$ docker-compose up -d. 
+.env file might need some changes to the ports/adresses used. Specifically, if you want to test it locally, set
+
+	BACKEND_HOST_ADRESS=127.0.0.1
+	REACT_APP_BACKEND_ADRESS=localhost.
 
 ## Minimum requirements
 If you do not wish to clone all the repository, or want the minimum amount of files after installation, here are the minimal requirements on the system
@@ -91,3 +102,9 @@ Full logs can be accessed by setting current directory to the root of the server
 
 ## Flask debug mode
 There seem to be an issue between tensorflow>=1.15.0 and flask debug mode. So you should not turn flask debug mode to true(in run.py), or you can and then downgrade tensorflow (1.14.0 worked before). See https://github.com/tensorflow/tensorflow/issues/34607 for more infos.
+
+# Contribution
+
+Contributions and user feebdacks are very welcomed.
+
+Contact: loic.verlingue@gustaveroussy.fr, ugo.benassayag@gmail.com
