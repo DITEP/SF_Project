@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}Login
+{% endblock %}
+{% block navbar %}{% endblock %}
+
+{% block main %}
+  <div id="login-container">
+    <form id = 'login' action="{{url_for('client_registration')}}" method="POST">
+      <div class="form-group">
+          <label for="Inputname">Name</label>
+          <input type = 'username' name="name" class="form-control" id="Inputname" placeholder="Enter your name here">
+      </div>
+      <div class="form-group">
+          <label for="Inputsurname">Surname</label>
+          <input type = 'username' name="surname" class="form-control" id="Inputsurname" placeholder="Enter your surname here">
+        </div>
+      <div class="form-group">
+        <label for="Inputusername">Your Username, what you will use to log in</label>
+        <input type = 'username' name="username" class="form-control" id="Inputusername" placeholder="Enter your username here">
+      </div>
+      <div class="form-group">
+        <label for="Inputpassword">Password, make sure it is confidential</label>
+        <input type = 'password' name="password" class="form-control" id="Inputpassword" placeholder="Enter your password">
+      </div>
+      <div class="form-group">
+        <label for="Inputpasswordconfirm">Confirm Password</label>
+        <input type = 'password' name="passwordconfirm" class="form-control" id="Inputpasswordconfirm" placeholder="Enter your password again">
+      </div>
+      
+      <input type="submit" class = 'btn' value="Submit">
+    </form>
+  </div>
+{% endblock %}

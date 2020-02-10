@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+
+{% block title %}Index{% endblock %}
+
+{% block head %}
+  {{ super() }}
+  <script src="{{url_for('static',filename='scriptIndex.js')}}"></script>
+{% endblock %}
+
+
+
+
+  {% block main %}
+    <div id="top-text" class = 'row'>
+      <div class="col-6">
+        <h1>HAN-based prediction tool</h1>
+        <div class='pres-text'>
+          <p>Our prediction tool helps doctors decide whether a patient is able to enter the phase 1
+              of the clinical trials based on their medical report.</p>
+          <p>Please enter the report manually or automatically by uploading a
+              file (support only txt format). Then, press submit and check the result.</p>
+        </div>
+        </div>
+        <div class="col-6 pres-text">
+          <div id="loader-container">
+            <p>Text is being processed...</p>
+            <div id = 'loader' class= 'loader'>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div id="form-container" class = 'row'>
+      <div class="col-6" id='cr'>
+        <textarea style="margin-bottom: 10px; margin-right: 10px; resize:none; float:left;"
+                  id="t1" name="text1" class="form-control" rows="7"></textarea>
+      </div>
+      <div class = "col-6" id="results-container">
+        <h1>Probability of Screen Fail :</h1>
+        <div>
+            <h2 id="result" value="">0%</h2>
+        </div>
+      </div>
+    </div>
+    
+    <div class="button-bar row">
+      <div class="col-2">
+        <button id = 'clear' class="btn" value="Clear">Clear</button>
+      </div>
+      <div class="col-2" id='upload-div'>
+        <label class="btn" for="getFile" >Upload File</label>
+        <input id='getFile' style="display:none;" type='file' accept='text/plain' onchange='openFile(event)' >
+      </div>
+      <div class="col-2" id='submit-div'>
+        <button id = 'submit' class="btn" >Submit</button>
+      </div>
+    </div>
+
+    <div id="more-info">
+      <h1>Model attention vizualization :</h1>
+      <div class="row">
+        <div class="col-6 pres-text">
+          <p>Here the text is broken down into sentences and the number next to each sentence is its attention value, that is how important this sentence is in the computation of the probability. </p>
+          <p>The most important sentences have been colored in red and should be payed extra care.</p>
+        </div>
+      </div>
+      <ol id="attention-container">
+      </ol>
+    </div>
+  {% endblock %}

@@ -1,0 +1,31 @@
+{%extends "layout.html" %}
+
+{% block title %}Patients{% endblock %}
+
+{% block main %}
+  <div class="">
+    <ol>
+      {% for patient in patients %}
+        <li id = 'li-patients'>
+          <a class='patient' href="#">Patient : {{ patient['nip']}} (Report dating from {{ patient['datecr']}})</a>
+          <div class = 'info' style = 'display:None'>
+            <h2>Report : <br> </h2>
+             <p> {{patient['text']}}</p>
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+  <script type="text/javascript">
+    var patients = document.getElementsByClassName('patient');
+    var elements = document.getElementsByClassName('info');
+    for (let i = 0; i<patients.length; i++){
+      patients[i].addEventListener("click",function(){
+        if (elements[i].style['display'] == 'block')
+          elements[i].style['display'] = 'None';
+        else
+          elements[i].style['display'] = 'block';
+        })
+    }
+  </script>
+{% endblock %}

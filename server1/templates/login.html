@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}Registration
+{% endblock %}
+{% block navbar %}{% endblock %}
+
+{% block main %}
+  <div id="login-container">
+    <form id = 'login' action="{{url_for('client_login')}}" method="POST">
+      <div class="form-group">
+        <label for="Inputusername">Username</label>
+        <input type = 'username' name="username" class="form-control" id="Inputusername" placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label for="Inputpassword">Password</label>
+        <input type = 'password' name="password" class="form-control" id="Inputpassword" placeholder="Enter password">
+      </div>
+      <input type="submit" class = 'btn' value="Log in">
+    </form>
+  </div>
+  
+  <a href="{{url_for('register')}}" id='registration-anchor'> You don't have an account yet ? Register here ! </a>
+{% endblock %}

@@ -1,0 +1,61 @@
+{%extends "layout.html" %}
+
+{% block title %}Patients{% endblock %}
+
+{% block main %}
+  <div class="">
+    <ol>
+      {% for patient in patients %}
+        <li id = 'li-patients'>
+          <form action="{{url_for('remove_patient')}}" method="POST">
+            <input type="hidden" name="id" value={{patient['idreport']}} />
+            <button type="submit" class='close' style='float:None'>x</button>
+          </form>
+          <a class='patient' href="#">Patient : {{ patient['nip']}} (Report dating from {{ patient['datecr']}})</a>
+          <div class = 'info' style = 'display:None'>
+            <h2>Report : <br> </h2>
+             <p> {{patient['text']}}</p>
+            <h2>Predicted probability of Screen Fail :</h2>
+            <p>{{patient['result']}}%</p>
+            <h2>Actual Result :</h2>
+             <div>
+                {% if patient['trueresult'] == None %}
+                Please enter the actual result for this patient
+                <form action="{{url_for('add_patient_infos')}}" method="POST">
+                  <div>
+                    <div>
+                      <input type="checkbox" id="<C1J1" name="actualResult" value="<C1J1">
+                      <label for="<C1J1">ScreenFail</label>
+                    </div>
+                    <div>
+                      <input type="checkbox" id="DLTcheck" name="actualResult" value="SSD">
+                      <label for="DLTcheck">Successfull Screening and DLT period</label>
+                    </div>
+                  </div>
+                  <input type="hidden" name="id" value={{patient['idreport']}} />
+                  <div>
+                    <button type="submit">Submit</button>
+                  </div>
+                </form>
+                {% else %}
+                <p>{{patient['trueresult']}}</p>
+                {% endif %}
+              </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ol>
+  </div>
+  <script type="text/javascript">
+    var patients = document.getElementsByClassName('patient');
+    var elements = document.getElementsByClassName('info');
+    for (let i = 0; i<patients.length; i++){
+      patients[i].addEventListener("click",function(){
+        if (elements[i].style['display'] == 'block')
+          elements[i].style['display'] = 'None';
+        else
+          elements[i].style['display'] = 'block';
+        })
+    }
+  </script>
+{% endblock %}
