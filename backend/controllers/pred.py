@@ -23,7 +23,7 @@ def pred(mytext):
     from nltk.tokenize import sent_tokenize
 
 
-    model_file = 'trainedmlp_oldnew_20epochs0.0033lr0.003l2.hd5'
+    model_file = 'nopretrain_old_new_20epochs'
     tokenizer_file = 'HAN_manual_epochword_tokeniser'
     data_dir = "./controllers/data"
     
