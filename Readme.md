@@ -10,10 +10,9 @@ This user-friendly web interface can help doctors use this model to perform pred
 Simply git clone this repository and enter following command at the root of the project. (docker and docker-compose need to be intalled and user must be part of the docker group)
 
 	$ docker-compose up -d. 
-.env file might need some changes to the ports/adresses used. Specifically, if you want to test it locally, set
+.env file might need some changes to the ports/adresses used. Specifically, you should set REACT_APP_BACKEND_ADRESS to the name of the backend host. By default, it is set to localhost.
 
-	BACKEND_HOST_ADRESS=127.0.0.1
-	REACT_APP_BACKEND_ADRESS=localhost.
+	
 
 ## Minimum requirements
 If you do not wish to clone all the repository, or want the minimum amount of files after installation, here are the minimal requirements on the system
@@ -92,6 +91,8 @@ A database backup is set up in the container with image sf_project_periodic-back
 Otherwise, one can connect to the database container through the adress/port specified when setting it up (initially 0.0.0.0:$SQL_PORT). This can be done with the following command : (use any other user if you created some)
 
 	$ mysql -u $SQL_USERNAME -p -P $SQL_PORT -h 0.0.0.0
+## Changing model
+If you make another model and want to use it on the server, you can change it by putting your model (that must be loadable by keras.models.load_model method) in backend/controllers/data. Then, in backend/controllers/pred, set variable model_file to the name of your model. Make sure that your model has same input size as parameters MAX_WORDS_PER_SENT and MAX_WORDS. Otherwise, change them accordingly.
 
 ## Logs
 Full logs can be accessed by setting current directory to the root of the server and entering command (user must have docker rights):
@@ -102,6 +103,8 @@ Full logs can be accessed by setting current directory to the root of the server
 
 ## Flask debug mode
 There seem to be an issue between tensorflow>=1.15.0 and flask debug mode. So you should not turn flask debug mode to true(in run.py), or you can and then downgrade tensorflow (1.14.0 worked before). See https://github.com/tensorflow/tensorflow/issues/34607 for more infos.
+
+
 
 # Contribution
 
