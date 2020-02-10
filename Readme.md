@@ -93,6 +93,12 @@ Otherwise, one can connect to the database container through the adress/port spe
 	$ mysql -u $SQL_USERNAME -p -P $SQL_PORT -h 0.0.0.0
 ## Changing model
 If you make another model and want to use it on the server, you can change it by putting your model (that must be loadable by keras.models.load_model method) in backend/controllers/data. Then, in backend/controllers/pred, set variable model_file to the name of your model. Make sure that your model has same input size as parameters MAX_WORDS_PER_SENT and MAX_WORDS. Otherwise, change them accordingly.
+For the changes to take effect on the current server, run this command at the root of the project. This will shutdown the server for a short time and it will restart with the new model up and running. 
+
+	docker-compose up -d --no-deps --build backend
+Beware that results of the predictions made by the previous model will remain. If you want to change all the previous results stored in the database, I suggest making a specific script that reads the current database data and make the prediction with the new model, then build a new database from this. After that, dump this new database in the db/init folder, make sure its called sfproject and run
+
+	docker-compose up -d --no-deps --build db
 
 ## Logs
 Full logs can be accessed by setting current directory to the root of the server and entering command (user must have docker rights):
