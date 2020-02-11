@@ -96,7 +96,7 @@ If you make another model and want to use it on the server, you can change it by
 For the changes to take effect on the current server, run this command at the root of the project. This will shutdown the server for a short time and it will restart with the new model up and running. 
 
 	docker-compose up -d --no-deps --build backend
-Beware that results of the predictions made by the previous model will remain. If you want to change all the previous results stored in the database, I suggest making a specific script that reads the current database data and make the prediction with the new model, then build a new database from this. After that, dump this new database in the db/init folder, make sure its called sfproject and run
+Beware that results of the predictions made by the previous model will remain. If you want to change all the previous results stored in the database, I suggest making a specific script that reads the current database data and make the prediction with the new model, then build a new database from this. After that, dump this new database in the db/init folder, make sure it uses database sfproject at start (.sql file must have the line USE sfproject at the beginning) and run
 
 	docker-compose up -d --no-deps --build db
 
