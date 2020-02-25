@@ -23,7 +23,7 @@ def pred(mytext):
     from nltk.tokenize import sent_tokenize
 
 
-    model_file = 'nopretrain_old_new_20epochs.hd5'
+    model_file = 'weighted_input_50e.hd5'
     tokenizer_file = 'HAN_manual_epochword_tokeniser'
     data_dir = "./controllers/data"
     
