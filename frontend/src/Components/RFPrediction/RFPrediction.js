@@ -1,6 +1,6 @@
 import React from "react";
 import APIClient from '../../Actions/apiClient';
-import './Prediction.css';
+import './RFPrediction.css';
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -10,7 +10,7 @@ import Table from 'react-bootstrap/Table';
 import { withTranslation } from 'react-i18next';
 import i18n from "i18next";
 
-class Prediction extends React.Component {
+class HANPrediction extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -92,7 +92,7 @@ class Prediction extends React.Component {
     //Reset all errors
     this.resetErrorsState();
     //First check if the user does not already have a job in the queue.
-    this.apiClient.checkUserInQueue({"userID":this.state.userID}).then ( (resp) => {
+    this.apiClient.checkUserInQueue({"userID":this.state.userID,"model":"HAN"}).then ( (resp) => {
       if (resp.position == -1) this.openPopup(event);
       else this.setState({userAlreadyInQueue:true})
     }).catch ( (err) => console.log(err) )
@@ -129,7 +129,8 @@ class Prediction extends React.Component {
         text: this.state.text,
         userID: this.state.userID,
         nip: this.state.nip,
-        dateCr: this.state.dateCr
+        dateCr: this.state.dateCr,
+        model: "RF"
       };
       this.setState({popUpIsOpen:false});
       /*
@@ -149,12 +150,12 @@ class Prediction extends React.Component {
   }
   
   predict = () => {
-    this.apiClient.checkUserInQueue({'userID':this.state.userID}).then( (resp) => {
+    this.apiClient.checkUserInQueue({'userID':this.state.userID,"model":"HAN"}).then( (resp) => {
       this.setState({positionInQueue:resp['position']});
       if (this.state.positionInQueue === 0) {
         clearInterval(this.state.intervalId)
         this.setState({isComputing:true, showVizualization: false});
-        this.apiClient.predict({"userID":this.state.userID}).then( (resp) => {
+        this.apiClient.predictHAN({"userID":this.state.userID}).then( (resp) => {
           this.setState({
             result: Math.round(parseFloat(resp.result)*10000)/100,
             wordAttentions: resp.word_attentions,
@@ -405,4 +406,4 @@ class Prediction extends React.Component {
     }
 }
 
-export default withTranslation()(Prediction);
+export default withTranslation()(HANPrediction);

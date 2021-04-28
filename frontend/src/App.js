@@ -8,7 +8,8 @@ import Header from './Components/Header/Header';
 import Info from './Components/Info';
 import Login from './Components/Login/Login';
 import Register from './Components/Register/Register';
-import Prediction from './Components/Prediction/Prediction';
+import HANPrediction from './Components/HANPrediction/HANPrediction';
+import RFPrediction from './Components/RFPrediction/RFPrediction';
 import Patients from './Components/Patients/Patients';
 import Profile from './Components/Profile/Profile';
 import Deleted from './Components/Deleted/Deleted';
@@ -26,11 +27,12 @@ function App() {
               </header>
             
              <Switch>
-               <Route path="/" exact component={Prediction} />
+               <Route path="/" exact component={HANPrediction} />
                <Route path="/infos" exact component={Info} />
                <Route path="/register" component={Register} />
                <Route path="/login" component={Login} />
-               <Route path="/prediction" component={Prediction} />
+               <Route path="/hanprediction" component={HANPrediction} />
+               <Route path="/rfprediction" component={RFPrediction} />
                <Route path="/patients" component={Patients} />
                <Route path="/profile" component={Profile} />
                <Route path="/deleted" component={Deleted} />

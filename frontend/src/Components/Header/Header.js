@@ -138,7 +138,9 @@ class Header extends React.Component {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="m-auto">
               
-              <Nav.Link href="/prediction">{t('header.prediction')}</Nav.Link>
+              <Nav.Link href="/hanprediction">{t('header.hanprediction')}</Nav.Link>
+              <span className="nav-link-separator">|</span>
+              <Nav.Link href="/rfprediction">{t('header.rfprediction')}</Nav.Link>
               <span className="nav-link-separator">|</span>
               <Nav.Link href="/patients">{t('header.patients')}</Nav.Link>
               <span className="nav-link-separator">|</span>

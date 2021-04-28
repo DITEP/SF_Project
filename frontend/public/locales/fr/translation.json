@@ -6,7 +6,8 @@
   },
   "header": {
     "info": "Plus d'Informations",
-    "prediction": "Prédiction",
+    "hanprediction": "Modèle HAN",
+    "rfprediction": "Modèle RF",
     "patients" : "Patients",
     "showprofile": "Profile",
     "showdeleted": "Patients Supprimés",

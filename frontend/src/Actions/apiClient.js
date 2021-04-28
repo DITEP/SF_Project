@@ -1,6 +1,6 @@
 import axios from 'axios';
 //See .env in upper folder for info on environment variable. It should be located in the folder containing the frontend folder.
-const BASE_URI = 'http://' + process.env['REACT_APP_BACKEND_ADRESS'] + ':' + process.env['REACT_APP_BACKEND_PORT'];
+const BASE_URI = 'http://localhost:5000';
 // Client that is used in every server request
 const client = axios.create({
  baseURL: BASE_URI,
@@ -38,8 +38,8 @@ class APIClient {
     return this.perform('post', '/submitPrediction', data);
   }
   
-  predict(userData){
-    return this.perform('post', '/predict', userData);
+  predictHAN(userData){
+    return this.perform('post', '/predictHAN', userData);
   }
   
   /*** ///  Maps to Queue controller  /// ***/  

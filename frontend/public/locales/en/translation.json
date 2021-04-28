@@ -6,7 +6,8 @@
   },
   "header": {
     "info": "More Info",
-    "prediction": "Predict",
+    "hanprediction": "Predict HAN",
+    "rfprediction": "Predict RF",
     "patients" : "Patients",
     "showprofile": "Show profile",
     "showdeleted": "Deleted Patients",
