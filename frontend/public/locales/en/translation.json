@@ -67,15 +67,16 @@
     "registrationsuccess": "Your account has been created! Please log in with your credentials.",
     "newpredictionsuccess": "You successfully submitted a new prediction!"
   },
+
   "prediction": {
-    "pagetitle" : "Prediction",
     "description": "Please enter the report manually down below, by copying it from the Ambre database for example. Then, press 'Submit' to start the prediction",
     "formtitle": "Copy the report here",
     "textplaceholder": "Text of the report...",
+    "appComputing": "The report is being processed...",
+    "userInQueue": "The app is currently working on another report. You are in position: ",
     "clearbutton": "Clear",
     "submitbutton": "Submit",
     "cancelbutton": "Cancel",
-    "probability":"Probability of Screen Fail :",
     "popupheader": "Additional Information Required",
     "popupniplabel": "NIP of the patient",
     "popupnipplaceholder": "Enter NIP here, in the form 1111-11111AA",
@@ -83,14 +84,22 @@
     "nipformaterror": "NIP format is wrong, should be 1111-11111AA",
     "predictionerror": "Error during prediction, please try again later",
     "useralreadyinqueue":"You already have a job in queue, please wait until it finishes before starting again. If you left this page before the end of the prediction, you can find the result in the Patient page.",
-    "reportindb": "This report is already in the database, please check the patient page if you require more info.",
+    "reportindb": "This report is already in the database, please check the patient page if you require more info."
+  },
+  "hanprediction":{
+    "pagetitle" : "HAN model Prediction",
+    "resultHeader":"Probability of Screen Fail:",
     "vizualization":{
-        "title": "Model Attention Visualization",
-        "description1":"Here the text is broken down into sentences and the number next to each sentence is its attention value, that is how important this sentence is in the computation of the probability.",
-        "description2":"The most important sentences have been colored in red and should be payed extra care.",
-        "tablesentence": "Sentences as seen by the algorithm",
-        "tablesentenceattention": "Attention value"
+      "title": "Model Attention Visualization",
+      "description1":"Here the text is broken down into sentences and the number next to each sentence is its attention value, that is how important this sentence is in the computation of the probability.",
+      "description2":"The most important sentences have been colored in red and should be payed extra care.",
+      "tablesentence": "Sentences as seen by the algorithm",
+      "tablesentenceattention": "Attention value"
     }
+  },
+  "rfprediction":{
+    "pagetitle" : "RF model Prediction",
+    "resultHeader":"Patient OS:"
   },
   "profile": {
     "changemail": "Change email address",

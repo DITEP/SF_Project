@@ -33,7 +33,8 @@ def create_app():
     app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(200000)
     
     #db init
-    db.init_app(app)
+    db.init_app(app
+    )
     
     
     

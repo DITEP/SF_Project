@@ -38,8 +38,8 @@ class APIClient {
     return this.perform('post', '/submitPrediction', data);
   }
   
-  predictHAN(userData){
-    return this.perform('post', '/predictHAN', userData);
+  predict(userData){
+    return this.perform('post', '/predict', userData);
   }
   
   /*** ///  Maps to Queue controller  /// ***/  

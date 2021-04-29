@@ -67,14 +67,14 @@
     "newpredictionsuccess": "Prediction soumise avec succès, merci d'attendre que le calcul s'effectue."
   },
   "prediction": {
-    "pagetitle" : "Prédiction",
-    "description": "Merci d'entrer le compte rendu manuellement, en effectuant un copié collé depuis Ambre par exemple. Appuyez ensuite sur 'Envoyer' pour lancer la prédiction",
     "formtitle": "Copiez le compte rendu ici",
+    "description": "Merci d'entrer le compte rendu manuellement, en effectuant un copié collé depuis Ambre par exemple. Appuyez ensuite sur 'Envoyer' pour lancer la prédiction",
+    "appComputing": "Le texte est en cours de traitement...",
+    "userInQueue": "L'application traite un autre compte rendu. Vous êtes en position: ",
     "textplaceholder": "Texte du compte rendu...",
     "clearbutton": "Effacer",
     "submitbutton": "Envoyer",
     "cancelbutton": "Annuler",
-    "probability":"Probabilité de Screen Fail :",
     "popupheader": "Informations complémentaires requises",
     "popupniplabel": "NIP du patient",
     "popupnipplaceholder": "Entrez le NIP du patient, sous la forme 1111-11111AA",
@@ -82,7 +82,11 @@
     "nipformaterror": "Erreur dans le format du NIP, merci de vérifier avant d'envoyer à nouveau.",
     "predictionerror": "Une erreur a eu lieu durant la prédiction, merci de réessayer plus tard.",
     "useralreadyinqueue": "Vous avez deja une prediction dans la queue, merci d'attendre qu'elle soit finit avant d'en soumettre une nouvelle. Si vous aviez quitté cette page avant d'obtenir un résultat, vous pouvez le retrouver sur la page patient.",
-    "reportindb": "Il semble que ce compte rendu soit déjà dans la base de données, merci de vérifier dans la page Patient pour plus d'information et de contacter l'administrateur en cas d'erreur.",
+    "reportindb": "Il semble que ce compte rendu soit déjà dans la base de données, merci de vérifier dans la page Patient pour plus d'information et de contacter l'administrateur en cas d'erreur."
+  },
+  "hanprediction":{
+    "pagetitle" : "Prédiction modèle HAN",
+    "resultHeader":"Probabilité de Screen Fail :",
     "vizualization":{
       "title": "Visualisation du résultat obtenu",
       "description1":"Ici le texte est décomposé en phrases et le nombre à côté de chaque phrase est sa valeur d'attention, c'est à dire l'importance de cette phrase dans le calcul de la probabilité.",
@@ -90,6 +94,10 @@
       "tablesentence": "Phrases comme vues par l'algorithme",
       "tablesentenceattention": "Valeur d'attention"
     }
+  },
+  "rfprediction":{
+    "pagetitle" : "Prédiction modèle RF",
+    "resultHeader":"Survie du patien :"
   },
   "profile": {
     "changemail": "Change email address",

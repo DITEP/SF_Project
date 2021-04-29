@@ -10,7 +10,7 @@ import Table from 'react-bootstrap/Table';
 import { withTranslation } from 'react-i18next';
 import i18n from "i18next";
 
-class HANPrediction extends React.Component {
+class RFPrediction extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -20,9 +20,6 @@ class HANPrediction extends React.Component {
       dateCr:'',
       
       result:0,
-      wordAttentions:[],
-      sentenceAttentions:[],
-      sentences:[],
       //A queue system exist if multiple users are trying to predict at the same
       //PositionInQueue keeps the user updated as to where he is located in this queue.
       positionInQueue: -1,
@@ -30,7 +27,6 @@ class HANPrediction extends React.Component {
       intervalId: -1,
       //Used to show a spinning wheel while the server is computing prediction
       isComputing: false,
-      showVizualization: false,
       
       //A Popup is used when pressing submit to ask for additional information
       popupIsOpen: false,
@@ -92,7 +88,7 @@ class HANPrediction extends React.Component {
     //Reset all errors
     this.resetErrorsState();
     //First check if the user does not already have a job in the queue.
-    this.apiClient.checkUserInQueue({"userID":this.state.userID,"model":"HAN"}).then ( (resp) => {
+    this.apiClient.checkUserInQueue({"userID":this.state.userID,"model":"RF"}).then ( (resp) => {
       if (resp.position == -1) this.openPopup(event);
       else this.setState({userAlreadyInQueue:true})
     }).catch ( (err) => console.log(err) )
@@ -150,22 +146,17 @@ class HANPrediction extends React.Component {
   }
   
   predict = () => {
-    this.apiClient.checkUserInQueue({'userID':this.state.userID,"model":"HAN"}).then( (resp) => {
+    this.apiClient.checkUserInQueue({'userID':this.state.userID,"model":"RF"}).then( (resp) => {
       this.setState({positionInQueue:resp['position']});
       if (this.state.positionInQueue === 0) {
         clearInterval(this.state.intervalId)
-        this.setState({isComputing:true, showVizualization: false});
-        this.apiClient.predictHAN({"userID":this.state.userID}).then( (resp) => {
+        this.setState({isComputing:true});
+        this.apiClient.predict({"userID":this.state.userID,"model":"RF"}).then( (resp) => {
           this.setState({
             result: Math.round(parseFloat(resp.result)*10000)/100,
-            wordAttentions: resp.word_attentions,
-            sentenceAttentions: resp.sentence_attentions,
-            sentences: resp.sentences,
             
             positionInQueue:-1,
-            
             isComputing: false,
-            showVizualization: true,
           });
           }).catch((err) => {
             console.log(err);
@@ -190,75 +181,6 @@ class HANPrediction extends React.Component {
       console.log(err)
       this.setState({positionInQueue:-1,reportID:-1})
     })
-  }
-  
-
-  
-  //Function to create the vizualization. It is stored in a table, hence it returns a list of <td></td> elements.
-  createItems = (sentences,sentenceAttentions,wordAttentions) => {
-    console.log(sentences);
-    //heatColor functions return a color based on the value of either attention
-    function heatColor(value){
-      var l = Math.max((0.95 - 4*value),0.54) * 100;
-      return "hsl(20, 88.9%," + l + "%)"
-    }
-    function wordHeatColor(value){
-      var l = Math.max((0.95 - 4*value),0.54) * 100;
-      return "hsl(195, 88.9%," + l + "%)"
-    }
-    
-    //topN takes an array and a value n, and returns the n first value. Additionnaly, it returns the quartile that we use
-    //to decide which sentences will have its words colored.
-    function topN(array,n) {
-        if (n>array.length) {
-          return "Error : n is bigger than array size"
-        }
-        var sorted = Array.from(array);
-        sorted.sort(function(a, b){return b - a});
-        const quart = Math.floor(sorted.length / 4);
-        return {limit: sorted[quart], nFirst: sorted.slice(0,n)}
-    }
-    
-    var topAttentions = topN(sentenceAttentions,3);
-    var attentionLimit = topAttentions.limit;
-    var firstAttentions = topAttentions.nFirst;
-    
-    //addWords creates word coloration display
-    function addWords(sentence,sentenceAttention,wordAttentions){
-      var listWords = [];
-      var words = sentence.split(" ");
-      for (var word = 0; word<words.length; word++){
-        listWords.push(
-          <span key={word} style={{backgroundColor: (sentenceAttention>attentionLimit) ? wordHeatColor(wordAttentions[word]) : null}}>
-            {words[word] + ' '}
-          </span>
-        )
-      }
-      return listWords
-    }
-    
-    //uses above functions to create the actual rows of the table. 
-    var listItems=[]
-    for (var sentence=0; sentence<sentences.length; sentence++){
-      listItems.push(
-      <tr key={sentence}>
-        <td scope="row" className={"tablesentencenumber"}>
-          {sentence}
-        </td>
-        <td className={"tablesentence"}> 
-          <p style={{color: (firstAttentions.includes(sentenceAttentions[sentence])) ? '#f26722' : 'black'}}> 
-            {addWords(sentences[sentence],sentenceAttentions[sentence],wordAttentions[sentence])}
-          </p>
-        </td>
-        
-        <td className={"tableattention"} 
-          style={{backgroundImage: "linear-gradient(to left, white, " + heatColor(sentenceAttentions[sentence]) + ")"}}> 
-          { Math.round(sentenceAttentions[sentence]*10000)/100 + "%"}
-        </td> 
-      </tr>
-      )
-    }
-    return listItems
   }
   
 
@@ -333,14 +255,14 @@ class HANPrediction extends React.Component {
         {/* PAGE */}
         <div className = 'row'>
           <div className = 'col-6'>
-            <h1> {t('prediction.pagetitle')} </h1>
+            <h1> {t('rfprediction.pagetitle')} </h1>
             <div className='pres-text'>
               <p>{t('prediction.description')}</p>
             </div>
           </div>
           <div className={"col-6 pres-text " + ((this.state.positionInQueue >= 0) ? "" : "hidden")}>
             <div className="loader-container">
-              <p>{this.state.isComputing ? "Text is being processed..." : "You are currently in position " + this.state.positionInQueue + " in the queue"}</p>
+              <p>{this.state.isComputing ? t('prediction.appComputing') : t('prediction.userInQueue') + this.state.positionInQueue}</p>
               <div id = 'loader' className= 'loader'></div>
             </div>
           </div>
@@ -370,34 +292,11 @@ class HANPrediction extends React.Component {
           </Form>
           <div className = "col-6" id="results-container">
             <div className="result-wrapper">
-              <h2>{t('prediction.probability')}</h2>
+              <h2>{t('rfprediction.resultHeader')}</h2>
               <div>
                 <h3>{this.state.result + '%'}</h3>
               </div>
             </div>
-          </div>
-        </div>
-        <div className="row">
-          <div id="more-info" className="col-12">
-            <h1>{t('prediction.vizualization.title')}</h1>
-            <div>
-              <div className="pres-text">
-                <p>{t('prediction.vizualization.description1')}</p>
-                <p>{t('prediction.vizualization.description2')}</p>
-              </div>
-            </div>
-            <Table hover className={"table-sm vizualization-table " + (this.state.showVizualization ? '' : 'hidden')}>
-             <thead>
-               <tr>
-                 <th scope="col">#</th>
-                 <th scope="col">{t('prediction.vizualization.tablesentence')}</th>
-                 <th scope="col">{t('prediction.vizualization.tablesentenceattention')}</th>
-               </tr>
-             </thead>
-             <tbody>
-               {this.state.showVizualization ? this.createItems(this.state.sentences,this.state.sentenceAttentions,this.state.wordAttentions) : null}
-             </tbody>
-            </Table>
           </div>
         </div>
       </React.Fragment>
@@ -406,4 +305,4 @@ class HANPrediction extends React.Component {
     }
 }
 
-export default withTranslation()(HANPrediction);
+export default withTranslation()(RFPrediction);

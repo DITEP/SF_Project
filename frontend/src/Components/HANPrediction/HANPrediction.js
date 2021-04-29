@@ -155,7 +155,7 @@ class HANPrediction extends React.Component {
       if (this.state.positionInQueue === 0) {
         clearInterval(this.state.intervalId)
         this.setState({isComputing:true, showVizualization: false});
-        this.apiClient.predictHAN({"userID":this.state.userID}).then( (resp) => {
+        this.apiClient.predict({"userID":this.state.userID,"model":"HAN"}).then( (resp) => {
           this.setState({
             result: Math.round(parseFloat(resp.result)*10000)/100,
             wordAttentions: resp.word_attentions,
@@ -340,7 +340,7 @@ class HANPrediction extends React.Component {
           </div>
           <div className={"col-6 pres-text " + ((this.state.positionInQueue >= 0) ? "" : "hidden")}>
             <div className="loader-container">
-              <p>{this.state.isComputing ? "Text is being processed..." : "You are currently in position " + this.state.positionInQueue + " in the queue"}</p>
+              <p>{this.state.isComputing ?  t('prediction.appComputing') : t('prediction.userInQueue') + this.state.positionInQueue}</p>
               <div id = 'loader' className= 'loader'></div>
             </div>
           </div>
@@ -370,7 +370,7 @@ class HANPrediction extends React.Component {
           </Form>
           <div className = "col-6" id="results-container">
             <div className="result-wrapper">
-              <h2>{t('prediction.probability')}</h2>
+              <h2>{t('hanprediction.resultHeader')}</h2>
               <div>
                 <h3>{this.state.result + '%'}</h3>
               </div>
@@ -379,19 +379,19 @@ class HANPrediction extends React.Component {
         </div>
         <div className="row">
           <div id="more-info" className="col-12">
-            <h1>{t('prediction.vizualization.title')}</h1>
+            <h1>{t('hanprediction.vizualization.title')}</h1>
             <div>
               <div className="pres-text">
-                <p>{t('prediction.vizualization.description1')}</p>
-                <p>{t('prediction.vizualization.description2')}</p>
+                <p>{t('hanprediction.vizualization.description1')}</p>
+                <p>{t('hanprediction.vizualization.description2')}</p>
               </div>
             </div>
             <Table hover className={"table-sm vizualization-table " + (this.state.showVizualization ? '' : 'hidden')}>
              <thead>
                <tr>
                  <th scope="col">#</th>
-                 <th scope="col">{t('prediction.vizualization.tablesentence')}</th>
-                 <th scope="col">{t('prediction.vizualization.tablesentenceattention')}</th>
+                 <th scope="col">{t('hanprediction.vizualization.tablesentence')}</th>
+                 <th scope="col">{t('hanprediction.vizualization.tablesentenceattention')}</th>
                </tr>
              </thead>
              <tbody>

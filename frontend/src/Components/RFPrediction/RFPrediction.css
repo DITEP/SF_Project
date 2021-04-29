@@ -86,40 +86,6 @@ p{
   padding-left: 10px;
 }
 
-.heat {
-  align-items: center;
-  justify-content: center;
-}
-
-.vizualization-table{
-  color:black;
-  font-size:large;
-}
-
-.vizualization-table thead{
-  color: #00b5ad;
-  font-weight: 300;
-}
-
-.vizualization-table td{
-  border-top:none;
-  vertical-align:inherit;
-}
-
-
-.tablesentence{
-  width:70%;
-  font-family: 'Avenir';
-}
-
-.tableattention{
-  width:20%;
-  border-radius:5px;
-}
-
-.tablesentencenumber{
-  width:10%
-}
 .additional-info {
   position: absolute;
   top: 25%;
