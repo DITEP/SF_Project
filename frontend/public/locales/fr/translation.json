@@ -97,7 +97,7 @@
   },
   "rfprediction":{
     "pagetitle" : "Prédiction modèle RF",
-    "resultHeader":"Survie du patien :"
+    "resultHeader":"Survie du patient :"
   },
   "profile": {
     "changemail": "Change email address",

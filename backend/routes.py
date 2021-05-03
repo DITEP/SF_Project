@@ -12,8 +12,10 @@ from application import db
 from models.User import User
 from models.Report import Report
 from models.Queue import Queue
+from models.Model import Model
+from models.Result import Result
 
-from controllers.pred import pred
+from controllers.han_pred import han_inference
 
 import time
 
@@ -102,60 +104,99 @@ def user():
 
 @routes.route('/submitPrediction',methods=['POST'])
 def submitPred():
-  try:
-    data = request.get_json()
-    #check if report is already in database
-    checkReport = Report.query.filter_by(nip=data['nip'],datecr=data['dateCr']).first()
-    if checkReport : return jsonify({'ok': False, 'message': 'Report already in database!'}), 409
-    #Add prediction to the queue
-    newPred = Queue(userid=data['userID'],text=data['text'],nip=data['nip'],datecr=data['dateCr'])
+    try:
+        data = request.get_json()
+        #check if required model exist in db
+        model = Model.query.filter_by(name=data["model"]).first()
+        if not model:
+            return jsonify({'ok': False, 'message': 'Cannot find the model in the database'}), 404
+        else:
+            #check if report is already in database
+            existingReport = Report.query.filter_by(nip=data['nip'],datecr=data['dateCr']).first()
+            if existingReport : 
+                #check if prediction already made with the model
+                existingResult = Result.query.filter_by(reportid=existingReport.id,modelid=model.id).first()
+                if existingResult:
+                    return jsonify({'ok': False, 'message': 'Prediction already in database!'}), 409
+                else:
+                    #submit prediction to queue
+                    return submit_to_queue(data['userID'],existingReport.id,model.id)
+            #report not in db, add it first then submit pred to queue
+            else:
+                newReport = Report(userid=data['userID'],text=data["text"],nip=data["nip"],datecr=data["dateCr"])
+                db.session.add(newReport)
+                db.session.flush()
+                #Add prediction to the queue
+                return submit_to_queue(data['userID'],newReport.id,model.id)
+    except Exception as error:
+        print(error)
+        return jsonify({'ok': False, 'message': 'Error during prediction submit!'}), 400
+
+def submit_to_queue(userID,reportID,modelID):
+    newPred = Queue(userid=userID,reportid=reportID,modelid=modelID)
     db.session.add(newPred)
     db.session.commit()
-
     return jsonify({'ok': True, 'message': 'Prediciton submitted successfully!'}), 200
-  except Exception as error:
-    print(error)
-    return jsonify({'ok': False, 'message': 'Error during prediction submit!'}), 400
+
+
 
 @routes.route('/predict', methods=['POST'])
 def predict():
-  try:
-    data = request.get_json()
-    #Get result previously posted to db
-    report = Queue.query.filter_by(userid=data['userID']).first().to_dict()
-    res = {}
-    (res['result'], res['sentences'], res['sentence_attentions'],res['word_attentions']) = compute(report['text'])
-    
-    #Add report to db
-    reportEntry = Report(userid=data['userID'],text=report['text'],nip=report['nip'],result=res['result'],datecr=report['dateCr'],display=True)
-    db.session.add(reportEntry)
-    #Remove prediction from queue  
-    Queue.query.filter_by(userid=data['userID']).delete()
-    db.session.commit()
-    
-    return jsonify(res)
-  except Exception as error:
-    #Delete from queue when an error occur
-    Queue.query.filter_by(userid=data['userID']).delete()
-    db.session.commit()
-    print(error)
-    return jsonify({"ok":False,"message": "Error during Prediction", "error":"Unexpected Error: {}".format(error)}), 400
-    
-#compute the attentions and result based on a text
-def compute(text):
     try:
-        (result, sentences,sentence_attentions,word_attentions) = pred(text)
+        data = request.get_json()
+        model = Model.query.filter_by(name=data['model']).first()
+        userid = data["userID"]
+
+        #Get information from queue
+        report = Queue.query.filter_by(userid=userid,modelid=model.id).first().to_dict()['report']
+        #Remove user from queue  
+        Queue.query.filter_by(userid=userid,modelid=model.id).delete()
+        db.session.commit()
+        
+        #Make the prediction according to model
+        if model.name =="HAN":
+            print("HAN PREDICT")
+            return han_predict(report["text"])
+        
+        if model.name =="RF":
+            return rf_predict(report["text"])
+
+
+    except Exception as error:
+        #Delete from queue when an error occur
+        Queue.query.filter_by(userid=userid,modelid=model.id).delete()
+        db.session.commit()
+        print(error)
+        return jsonify({"ok":False,"message":"Unexpected Error {}. Deleted user position in queue".format(error)}), 400
+
+
+def han_predict(text):
+    try:
+        result, sentences, sentence_attentions, word_attentions = han_inference(text)
+
         #data is given back as part of a list of one element that we need to extract
         #We're also converting data into list for use in JSON
-        result = float(result)
-        sentence_attentions = sentence_attentions.tolist()
-        word_attentions = word_attentions.tolist()
-        return (result, sentences,sentence_attentions,word_attentions)
+        res = {}
+        res['result'] = float(result)
+        res['sentences'] = sentences
+        res['sentence_attentions'] = sentence_attentions.tolist()
+        res['word_attentions'] = word_attentions.tolist()
+        
+        return jsonify(res), 200
     except Exception as error:
-        print("Unexpected Error: {}".format(error))
-        return "Unexpected Error: {}".format(error)
+        print(error)
+        return jsonify({"ok":False,"message": "Error during Prediction", "error":"Unexpected Error: {}".format(error)}), 400
         
+def rf_predict(text):
+    try:
+        result = 0
         
+        return jsonify({"ok":True,"message":"RF prediction","result":result}), 200
+    except Exception as error:
+        print(error)
+        return jsonify({"ok":False,"message": "Error during Prediction", "error":"Unexpected Error: {}".format(error)}), 400
+    
+
 ### Queue
 
 #CheckUserInQueue checks if user is in queue and returns his position. If the user is not in queue, position is set to -1.
@@ -163,10 +204,11 @@ def compute(text):
 def checkQueue():
   try:
     userData = request.get_json()
-    inQueue = Queue.query.all()
-    for i in range(len(inQueue)):
-      inQueue[i] = inQueue[i].to_dict()
-      if (inQueue[i]['userID'] == userData['userID']):
+    model = Model.query.filter_by(name=userData['model']).first()
+    inQueue = Queue.query.filter_by(modelid=model.id).all()
+    print(inQueue)
+    for i,queueElement in enumerate(inQueue):
+      if (queueElement.to_dict()['userID'] == userData['userID']):
         return jsonify({"ok":True,"message":'User is in queue', "position":i}), 200
     return jsonify({"ok":True,"message":'User is not in queue', "position":-1}), 200
   except Exception as error:
@@ -177,7 +219,8 @@ def checkQueue():
 def removeJob():
   try:
     userData = request.get_json()
-    Queue.query.filter_by(userid=userData['userID']).delete()
+    model = Model.query.filter_by(name=userData['model']).first()
+    Queue.query.filter_by(userid=userData['userID'],modelid=model.id).delete()
     db.session.commit()
     return jsonify({"ok":True,"message":'Job successfully deleted from queue'}), 200
   except Exception as error:
@@ -189,9 +232,9 @@ def removeJob():
 @routes.route('/patients', methods=['GET'])
 def patient_list():
   try:
-    patients = Report.query.order_by(Report.datecr.desc()).all()
-    for i in range(len(patients)):
-      patients[i] = patients[i].to_dict()
+    patients = Result.query.all()
+    patients_sorted = sorted(patients,key=lambda result:result.report.datecr,reverse=True)
+    patients_dict = [patients_sorted[i].to_dict() for i in range(len(patients))]
     return jsonify(patients), 200
   except Exception as error:
     print("Unexpected Error: {}".format(error))
@@ -199,19 +242,14 @@ def patient_list():
     
 @routes.route('/attention', methods=['POST'])
 def attentionValue():
-  try:
-    res = {}
-    (result, res['sentences'], res['sentence_attentions'],res['word_attentions']) = compute(request.get_json()['text'])
-    return jsonify(res)
-  except Exception as error:
-    print("Unexpected Error: {}".format(error))
-    return jsonify({"ok":False,"message": "Error during attention compute", "error":str(error)}), 400
-    
+    return han_predict(request.get_json()['text'])
+
+
 @routes.route('/updatePatient',methods=["POST"])
 def updatePatient():
   try:
     data = request.get_json()
-    patient = Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
+    patient = Result.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
     db.session.commit()
     return jsonify({'ok': True, 'message': 'Patient Updated successfully!'}), 200
   except Exception as error:

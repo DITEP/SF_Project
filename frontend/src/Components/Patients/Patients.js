@@ -120,7 +120,7 @@ class Patients extends React.Component {
       isOwner = true;
     }
   //Date is formated here so that it display as yyy/mm/dd (was full js date format before, with time, day...)
-  var d = new Date(item.datecr)
+  var d = new Date(item.report.datecr)
   var formatedDate = [d.getFullYear(),
   ('0' + (d.getMonth() + 1)).slice(-2),
   ('0' + d.getDate()).slice(-2)].join('-')
@@ -129,10 +129,10 @@ class Patients extends React.Component {
   return (
       <React.Fragment key={item.id}>
         <tr>
-          <td className="tablenip">{item.nip}</td>
+          <td className="tablenip">{item.report.nip}</td>
           <td className="tabledate">{formatedDate}</td>
           <td className="tableresult">{(item.result *100).toString().slice(0,5) +"%"}</td>
-          <td className="tabletrue">{item.screenfail !== null ? (item.screenfail ? "Screen Fail" : "Successfull Screening and DLT Period") :
+          <td className="tabletrue">{item.groundTruth !== null ? (item.groundTruth ? "Screen Fail" : "Successfull Screening and DLT Period") :
             (!isOwner ? "Unknown" : 
               <React.Fragment>
                 Screen Fail :  
@@ -143,7 +143,7 @@ class Patients extends React.Component {
                 <span className = "check" onClick={() => {var new_checkboxes = this.state.checkboxes; new_checkboxes[item.id]=false; this.setState({checkboxes:new_checkboxes})}}>
                   {(this.state.checkboxes[item.id] === null) ? "\u2610" : (this.state.checkboxes[item.id] ? "\u2610" : "\u2611") }
                 </span>
-                <Button className={"submit-sf-info " + (this.state.checkboxes[item.id] === null ? 'hidden' : '')} onClick={() => {item["screenfail"] = this.state.checkboxes[item.id] ; this.updatePatient(item)}}> {t('prediction.submitbutton')} </Button>
+                <Button className={"submit-sf-info " + (this.state.checkboxes[item.id] === null ? 'hidden' : '')} onClick={() => {item["groundTruth"] = this.state.checkboxes[item.id] ; this.updatePatient(item)}}> {t('prediction.submitbutton')} </Button>
                 <Button className={"submit-sf-info " + (this.state.checkboxes[item.id] === null ? 'hidden' : '')} onClick={() => {var new_checkboxes = this.state.checkboxes; new_checkboxes[item.id]=null; this.setState({checkboxes:new_checkboxes})}}> {t('prediction.clearbutton')} </Button>
               </React.Fragment>)
             }
@@ -154,11 +154,11 @@ class Patients extends React.Component {
         <tr>
           <td colSpan="5" className={'tabletext ' + (this.state.open===item.id ? '' : 'hidden')} id={item.id + "text"}>
             {(this.state.showAttention ? 
-              <Table className='vizualization-table'><tbody>{this.state.attentionItems}</tbody></Table> : item.text)}
+              <Table className='vizualization-table'><tbody>{this.state.attentionItems}</tbody></Table> : item.report.text)}
           </td>
           <td className={'tablecollapsebutton ' + (this.state.open===item.id ? '' : 'hidden')}> 
             <Button className = "closebutton" onClick={() => this.setState({open: -1, showAttention:false})} disabled={this.state.attentionComputing}> &#8593; </Button> 
-            <Button className = "attentionbutton" onClick={() => this.showAttention(item.text)} disabled={this.state.attentionComputing}> Show Attention </Button> 
+            <Button className = "attentionbutton" onClick={() => this.showAttention(item.report.text)} disabled={this.state.attentionComputing}> Show Attention </Button> 
             <div className={"pres-text " + (this.state.attentionComputing ? "" : "hidden")}>
               <div className="loader-container">
                 Computing Attention...

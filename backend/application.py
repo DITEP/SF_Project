@@ -59,5 +59,6 @@ def create_app():
         
         # Create tables for our models
         db.create_all()
+        print("create db")
 
         return app

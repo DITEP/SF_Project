@@ -333,7 +333,7 @@ class HANPrediction extends React.Component {
         {/* PAGE */}
         <div className = 'row'>
           <div className = 'col-6'>
-            <h1> {t('prediction.pagetitle')} </h1>
+            <h1> {t('hanprediction.pagetitle')} </h1>
             <div className='pres-text'>
               <p>{t('prediction.description')}</p>
             </div>

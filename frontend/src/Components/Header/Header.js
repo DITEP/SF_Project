@@ -37,17 +37,31 @@ class Header extends React.Component {
         userIsLoggedIn: true,
         userID:data.logged_in_as['id']
       })
-      //If user is on a page different than prediction, he should not have anything in queue. If he does, it means he left prediction page before
+      //If user is on a page different than HAN prediction, he should not have anything in queue. If he does, it means he left prediction page before
       //his job got processed. So server is asked to remove job from queue and user is told his queued job has been deleted.
-      if (this.props.history.location.pathname != "/prediction"){
-        this.apiClient.checkUserInQueue({"userID":this.state.userID}).then ( (resp) => {
+      if (this.props.history.location.pathname != "/han_prediction"){
+        this.apiClient.checkUserInQueue({"userID":this.state.userID,"model":"HAN"}).then ( (resp) => {
           //if position =0, user is in queue but his prediction is being processed. He simply gets an alert stating that result of the prediction will
           //be on Patient page. If position > 0, user is in queue and his job will never get processed, it gets deleted and a message is sent.
           if (resp.position != -1){
             if (resp.position == 0) this.setState({finishingJob:true})
             else {
               this.setState({userInQueue:true});
-              this.apiClient.removeJobFromQueue({"userID":this.state.userID})
+              this.apiClient.removeJobFromQueue({"userID":this.state.userID,"model":"RF"})
+            }
+          }
+        }).catch ( (err) => console.log(err) )
+      }
+      //Do the same for RF model
+      if (this.props.history.location.pathname != "/rf_prediction"){
+        this.apiClient.checkUserInQueue({"userID":this.state.userID,"model":"RF"}).then ( (resp) => {
+          //if position =0, user is in queue but his prediction is being processed. He simply gets an alert stating that result of the prediction will
+          //be on Patient page. If position > 0, user is in queue and his job will never get processed, it gets deleted and a message is sent.
+          if (resp.position != -1){
+            if (resp.position == 0) this.setState({finishingJob:true})
+            else {
+              this.setState({userInQueue:true});
+              this.apiClient.removeJobFromQueue({"userID":this.state.userID,"model":"RF"})
             }
           }
         }).catch ( (err) => console.log(err) )
