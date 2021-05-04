@@ -10,6 +10,7 @@ class Profile extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+
     };
 	}
 
@@ -25,7 +26,7 @@ class Profile extends React.Component {
             const location = {
               pathname: '/login',
               state: { 
-                from: 'Prediction', 
+                from: 'Profile', 
        					message: i18n.t('messages.notauthorized') 
               }
             }      

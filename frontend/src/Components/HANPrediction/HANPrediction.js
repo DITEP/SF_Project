@@ -61,7 +61,7 @@ class HANPrediction extends React.Component {
             const location = {
               pathname: '/login',
               state: { 
-                from: 'Prediction', 
+                from: 'HANPrediction', 
        					message: i18n.t('messages.notauthorized') 
               }
             }      

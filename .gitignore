@@ -1,2 +1,4 @@
 .env
 exemple*
+backend/controllers/data/clusters.csv
+TODO.txt
