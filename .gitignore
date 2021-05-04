@@ -1,4 +1,9 @@
 .env
 exemple*
-backend/controllers/data/clusters.csv
+
+
+backend/controllers/data/clusters.txt
+backend/__pycache__
+backend/controllers/__pycache__
+
 TODO.txt
