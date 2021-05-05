@@ -1,6 +1,6 @@
 import axios from 'axios';
 //See .env in upper folder for info on environment variable. It should be located in the folder containing the frontend folder.
-const BASE_URI = 'http://localhost:5000';
+const BASE_URI = 'http://${process.env.REACT_APP_BACKEND_ADRESS}:${process.env.REACT_APP_BACKEND_PORT}';
 // Client that is used in every server request
 const client = axios.create({
  baseURL: BASE_URI,
@@ -69,15 +69,22 @@ class APIClient {
     return this.perform('get', '/mail');
   }
 
+  /*** /// Model /// ***/
+  sendModelForm(formData){
+   return this.perform('post','/uploadmodel',formData, 'multipart/form-data')
+  }
+  
+
   // Perform takes in the mehthod, route, data and creates a new client
   // Also gets the token from localStorage and adds it to the header of the request
-  async perform (method, resource, data) {
+  async perform (method, resource, data,contentType) {
     return client({
       method,
       url: resource,
       data,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': contentType || 'application/json'
       } 
     }).then(resp => {
       return resp.data ? resp.data : [];

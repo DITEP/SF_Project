@@ -10,9 +10,9 @@ class AddModelForm extends React.Component {
 		super(props);
         this.state = { 
             name:"",
-            modelClass:"",
+            modelClass:"HAN",
             file:null,
-            output:""
+            output:"SF"
         }
 	}
 
@@ -36,15 +36,28 @@ class AddModelForm extends React.Component {
         )
     }
 
+    handleChange = (event) => {
+    const target = event.target;
+    const name = target.name;
+    this.setState({
+      [name]: target.value    });
+    }
+
     setSelectedFile = (file) => {
         this.setState({
             file:file
         })
     }
 
+
     submitForm = () => {
-        const formData = new FormData();
         // USE APICLIENT TO SEND DATA
+        const formData = new FormData();
+        // dict of all elements
+        formData.append("file", this.state.file);
+        formData.append("name", this.state.name);
+        formData.append("modelClass", this.state.modelClass);
+        formData.append("output", this.state.output);
 
     };
   
@@ -55,15 +68,26 @@ class AddModelForm extends React.Component {
             <form>
                 <input
                 type="text"
+                name="name"
                 value={this.state.name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={this.handleChange}
                 />
 
-                <FileUploader
-                onFileSelect={(file) => setSelectedFile(file)}
+                <select name="modelClass" value={this.state.modelClass} onChange={this.handleChange}>            
+                    <option value="HAN">HAN</option>
+                    <option value="RF">Random Forest</option>
+                </select>
+
+                <select name="output" value={this.state.output} onChange={this.handleChange}>            
+                    <option value="SF">Screen Fail</option>
+                    <option value="OS">Patient OS</option>
+                </select>
+
+                <this.FileUploader
+                onFileSelect={(file) => this.setSelectedFile(file)}
                 />
 
-                <button onClick={submitForm}>Submit</button>
+                <button onClick={this.submitForm}>Submit</button>
             </form>
         </div>
     )

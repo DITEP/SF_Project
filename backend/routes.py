@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from passlib.hash import sha256_crypt as hasher
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 from flask_jwt_extended import (create_access_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
 from application import jwt
@@ -261,9 +261,9 @@ def updatePatient():
 def upload_file():
     try:
         f = request.files['model']
-        data = request.get_json()
+        data = request.form
         filename = secure_filename(f.filename)
-        f.save(filename)
+        f.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
         #remove previously used algorithm for this class
         Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))
         #Save to DB

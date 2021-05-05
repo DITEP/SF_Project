@@ -4,14 +4,15 @@ import APIClient from '../../Actions/apiClient';
 import i18n from "i18next";
 import { withTranslation } from 'react-i18next';
 
-
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 class ModelsTable extends React.Component {
 	constructor(props) {
 		super(props);
         this.state = {
-            isFetchingData = true,
-            models = [],
-            entriesExist = false
+            isFetchingData:true,
+            models:[],
+            entriesExist:false
         }
 	}
 
@@ -27,10 +28,12 @@ class ModelsTable extends React.Component {
                   entriesExist: true
                 });
             }
-        })
+        });
     }
 
-    createItem = (item) => {
+
+    createItem = (item,t) => {
+        return(
         <React.Fragment key={item.id}>
             <tr>
                 <td className="table_modelClass">{item.modelClass}</td>
@@ -49,12 +52,13 @@ class ModelsTable extends React.Component {
                 </td>
             </tr>
         </React.Fragment>
+        )
     }
   
 	render () {
         const { t } = this.props;
         if (!this.state.isFetchingData) {
-            var listItems = this.state.models.map(this.createItem);
+            var listItems = this.state.models.map(this.createItem,t=t);
         }
         return(
             <div className="container-fluid">

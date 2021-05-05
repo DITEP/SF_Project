@@ -27,14 +27,17 @@ def create_app():
     app.isCalculating = False
     #port and adress for db connection is servicename:3306 because backend connects through the docker-compose network.
     #This can be changed in the docker-compose.yml file by removing the link, but it is not advised.
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://user:password@localhost:3306/sfproject"
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{os.environ['SQL_USERNAME']}:{os.environ['MYSQL_ROOT_PASSWORD']}@{os.environ['SQL_SERVICENAME']}:3306/{os.environ['DATABASE_NAME']}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     #token expiration is currently set to half a day
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(200000)
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = os.environ['TOKEN_EXPIRATION']
+    app.config['SECRET_KEY'] = os.environ['JWT']
+
+    #set upload directory
+    app.config['UPLOAD_FOLDER'] = os.environ['BACKEND_UPLOAD_FOLDER']
     
     #db init
-    db.init_app(app
-    )
+    db.init_app(app)
     
     
     

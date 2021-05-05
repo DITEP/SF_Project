@@ -4,7 +4,9 @@ nltk==3.4.5
 passlib==1.7.1
 flask==1.1.1
 flask-cors==3.0.8
-Flask-SQLAlchemy==2.4.1
+Flask-SQLAlchemy==2.5
 pymysql==0.9.3
 flask-jwt-extended==3.24.0
 flask-mail==0.9.1
+spacy
+stop-words
