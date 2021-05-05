@@ -257,13 +257,13 @@ def updatePatient():
 
 ### MODELS
 
-@app.route('/uploadmodel', methods = ['POST'])
+@routes.route('/uploadmodel', methods = ['POST'])
 def upload_file():
     try:
         f = request.files['model']
         data = request.form
         filename = secure_filename(f.filename)
-        f.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+        f.save(os.path.join(os.environ['BACKEND_UPLOAD_FOLDER'],filename))
         #remove previously used algorithm for this class
         Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))
         #Save to DB
@@ -272,7 +272,7 @@ def upload_file():
     except Exception as error:
         return jsonify({'ok': False, 'message': 'Error uploading file'}), 400
 
-@app.route("/getmodels", methods=['GET'])
+@routes.route("/getmodels", methods=['GET'])
 def get_models():
     try:
         #Return all models in db
@@ -282,7 +282,7 @@ def get_models():
     except Exception as error:
         return jsonify({'ok': False, 'message': 'Error accessing db for models'}), 400
 
-@app.route("/selectmodel", methods=['POST'])
+@routes.route("/selectmodel", methods=['POST'])
 def select_model():
     try:
         data = request.get_json()

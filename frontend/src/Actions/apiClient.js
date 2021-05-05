@@ -1,6 +1,7 @@
 import axios from 'axios';
 //See .env in upper folder for info on environment variable. It should be located in the folder containing the frontend folder.
-const BASE_URI = 'http://${process.env.REACT_APP_BACKEND_ADRESS}:${process.env.REACT_APP_BACKEND_PORT}';
+const BASE_URI = `http://${process.env.REACT_APP_BACKEND_ADRESS}:${process.env.REACT_APP_BACKEND_PORT}`;
+console.log(BASE_URI)
 // Client that is used in every server request
 const client = axios.create({
  baseURL: BASE_URI,
@@ -84,7 +85,8 @@ class APIClient {
       data,
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': contentType || 'application/json'
+        'Content-Type': contentType || 'application/json',
+        
       } 
     }).then(resp => {
       return resp.data ? resp.data : [];
