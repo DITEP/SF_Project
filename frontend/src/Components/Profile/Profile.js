@@ -6,21 +6,26 @@ import { withTranslation } from 'react-i18next';
 
 import './Profile.css';
 
+import ModelsTable from './ModelsTable';
+import AddModelForm from "./AddModelForm";
+
 class Profile extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-
+      userID: -1,
+      isAdmin: false
     };
 	}
 
   async componentDidMount() {
     this.apiClient = new APIClient();
-    this.apiClient.getAuth().then((data) =>
+    this.apiClient.getAuth().then((data) =>{
       this.setState({
-        userID: data.logged_in_as.id
+        userID: data.logged_in_as.id,
+        isAdmin: data.isAdmin
       })
-    ).catch((err) => {
+    }).catch((err) => {
         if (err.response.status) {
           if (err.response.status === 401 || err.response.status === 422) {        
             const location = {
@@ -35,12 +40,18 @@ class Profile extends React.Component {
         }
       })
   }
-  
+
 	render () {
     const { t } = this.props;
+    const isAdmin = this.state.isAdmin;
     return (
         <div className="container">
-          Profile Page is under construction...
+          {isAdmin && 
+            (<div> 
+              <ModelsTable/>
+              <AddModelForm/>
+            </div>)
+          }
         </div>
       );
     }

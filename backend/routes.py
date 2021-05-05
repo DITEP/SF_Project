@@ -64,7 +64,8 @@ def checkAuth():
   try:
     token = request.headers.get('Authorization')
     current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+    isAdmin = User.query.filter_by(id=current_user).first().isAdmin
+    return jsonify(logged_in_as=current_user,isAdmin=isAdmin), 200
   except:
     return jsonify({'ok': False, 'message': 'invalid username or password'}), 401
 
@@ -88,7 +89,7 @@ def user():
         elif usernameExists:
             return jsonify({'ok': False, 'message': 'Username already exists!', 'origin' : 'username'}), 409
         else:
-            newUser = User(username=userData['username'],password=hasher.hash(userData['password']),email=userData['email'])
+            newUser = User(username=userData['username'],password=hasher.hash(userData['password']),email=userData['email'],isAdmin=False)
             db.session.add(newUser)
             db.session.commit()
         return jsonify({'ok': True, 'message': 'User created successfully!'}), 200
@@ -232,8 +233,8 @@ def patient_list():
     try:
         patients = Result.query.all()
         patients_sorted = sorted(patients,key=lambda result:result.report.datecr,reverse=True)
-        patients_dict = [patients_sorted[i].to_dict() for i in range(len(patients))]
-        return jsonify(patients), 200
+        patients_dict = [patient_sorted.to_dict() for patient_sorted in patients_sorted]
+        return jsonify(patients_dict), 200
     except Exception as error:
         print("Unexpected Error: {}".format(error))
         return jsonify({"ok":False,"message": "Error loading patients", "error":str(error)}), 400
@@ -247,7 +248,7 @@ def attentionValue():
 def updatePatient():
     try:
         data = request.get_json()
-        patient = Result.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
+        Result.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
         db.session.commit()
         return jsonify({'ok': True, 'message': 'Patient Updated successfully!'}), 200
     except Exception as error:
@@ -256,12 +257,17 @@ def updatePatient():
 
 ### MODELS
 
-@app.route('/uploader', methods = ['POST'])
+@app.route('/uploadmodel', methods = ['POST'])
 def upload_file():
     try:
         f = request.files['model']
-        f.save(secure_filename(f.filename))
-        #SAVE TO DB
+        data = request.get_json()
+        filename = secure_filename(f.filename)
+        f.save(filename)
+        #remove previously used algorithm for this class
+        Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))
+        #Save to DB
+        new_model = Model(name=data["modelName"],modelClass=data["modelClass"],output=data["output"],filename=filename,toUse=True)
         return jsonify({'ok': True, 'message': 'File uploading successfully!'}), 200
     except Exception as error:
         return jsonify({'ok': False, 'message': 'Error uploading file'}), 400
@@ -270,7 +276,9 @@ def upload_file():
 def get_models():
     try:
         #Return all models in db
-        return jsonify({'ok': True, 'message': 'Models currently in db'}), 200
+        models = Model.query.all()
+        models_dict = [model.to_dict() for model in models]
+        return jsonify(models_dict), 200
     except Exception as error:
         return jsonify({'ok': False, 'message': 'Error accessing db for models'}), 400
 
@@ -279,8 +287,8 @@ def select_model():
     try:
         data = request.get_json()
         #Modify DB
-
-
+        Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))
+        Model.query.filter_by(id=data["modelid"]).update(dict(toUse=True))
         return jsonify({'ok': True, 'message': 'New model selected!'}), 200
     except Exception as error:
         return jsonify({'ok': False, 'message': 'Error selecting model'}), 400
