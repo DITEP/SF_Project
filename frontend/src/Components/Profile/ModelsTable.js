@@ -58,7 +58,7 @@ class ModelsTable extends React.Component {
 	render () {
         const { t } = this.props;
         if (!this.state.isFetchingData) {
-            var listItems = this.state.models.map(this.createItem,t=t);
+            var listItems = this.state.models.map(this.createItem,t);
         }
         return(
             <div className="container-fluid">

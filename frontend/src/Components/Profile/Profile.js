@@ -23,8 +23,9 @@ class Profile extends React.Component {
     this.apiClient.getAuth().then((data) =>{
       this.setState({
         userID: data.logged_in_as.id,
-        isAdmin: data.isAdmin
+        isAdmin: data.logged_in_as.isAdmin
       })
+      console.log(this.state.isAdmin);
     }).catch((err) => {
         if (err.response.status) {
           if (err.response.status === 401 || err.response.status === 422) {        

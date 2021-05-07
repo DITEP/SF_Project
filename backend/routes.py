@@ -19,6 +19,7 @@ from models.Result import Result
 from controllers.han_pred import han_inference
 
 import time
+import os
 
 routes = Blueprint('routes', __name__)
 db.create_all()
@@ -64,8 +65,7 @@ def checkAuth():
   try:
     token = request.headers.get('Authorization')
     current_user = get_jwt_identity()
-    isAdmin = User.query.filter_by(id=current_user).first().isAdmin
-    return jsonify(logged_in_as=current_user,isAdmin=isAdmin), 200
+    return jsonify(logged_in_as=current_user), 200
   except:
     return jsonify({'ok': False, 'message': 'invalid username or password'}), 401
 
@@ -203,7 +203,7 @@ def rf_predict(text,model_file):
 def checkQueue():
   try:
     userData = request.get_json()
-    model = Model.query.filter_by(type=userData["model"],toUse=True).first()
+    model = Model.query.filter_by(modelClass=userData["model"],toUse=True).first()
     inQueue = Queue.query.filter_by(modelid=model.id).all()
     print(inQueue)
     for i,queueElement in enumerate(inQueue):
@@ -260,16 +260,21 @@ def updatePatient():
 @routes.route('/uploadmodel', methods = ['POST'])
 def upload_file():
     try:
-        f = request.files['model']
+        f = request.files['file']
         data = request.form
         filename = secure_filename(f.filename)
         f.save(os.path.join(os.environ['BACKEND_UPLOAD_FOLDER'],filename))
+        print(filename)
         #remove previously used algorithm for this class
-        Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))
+        if (len(Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).all()) > 0):
+            Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))
         #Save to DB
-        new_model = Model(name=data["modelName"],modelClass=data["modelClass"],output=data["output"],filename=filename,toUse=True)
+        new_model = Model(name=data["name"],modelClass=data["modelClass"],output=data["output"],filename=filename,toUse=True)
+        db.session.add(new_model)
+        db.session.commit()
         return jsonify({'ok': True, 'message': 'File uploading successfully!'}), 200
     except Exception as error:
+        print(error)
         return jsonify({'ok': False, 'message': 'Error uploading file'}), 400
 
 @routes.route("/getmodels", methods=['GET'])

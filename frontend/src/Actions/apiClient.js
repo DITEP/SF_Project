@@ -74,6 +74,10 @@ class APIClient {
   sendModelForm(formData){
    return this.perform('post','/uploadmodel',formData, 'multipart/form-data')
   }
+
+  getModels(){
+    return this.perform('get','/getmodels')
+   }
   
 
   // Perform takes in the mehthod, route, data and creates a new client
@@ -86,7 +90,7 @@ class APIClient {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': contentType || 'application/json',
-        
+        'Access-Control-Allow-Origin':'*'
       } 
     }).then(resp => {
       return resp.data ? resp.data : [];

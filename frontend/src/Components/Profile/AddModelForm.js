@@ -50,7 +50,8 @@ class AddModelForm extends React.Component {
     }
 
 
-    submitForm = () => {
+    submitForm = (event) => {
+        event.preventDefault();
         // USE APICLIENT TO SEND DATA
         const formData = new FormData();
         // dict of all elements
@@ -58,14 +59,15 @@ class AddModelForm extends React.Component {
         formData.append("name", this.state.name);
         formData.append("modelClass", this.state.modelClass);
         formData.append("output", this.state.output);
-
+        console.log(formData)
+        this.apiClient.sendModelForm(formData)
     };
   
 	render () {
     const { t } = this.props;
     return(
         <div>
-            <form>
+            <form onSubmit={this.submitForm}>
                 <input
                 type="text"
                 name="name"
@@ -87,7 +89,7 @@ class AddModelForm extends React.Component {
                 onFileSelect={(file) => this.setSelectedFile(file)}
                 />
 
-                <button onClick={this.submitForm}>Submit</button>
+                <input type="submit" value="Envoyer" />
             </form>
         </div>
     )

@@ -30,7 +30,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{os.environ['SQL_USERNAME']}:{os.environ['MYSQL_ROOT_PASSWORD']}@{os.environ['SQL_SERVICENAME']}:3306/{os.environ['DATABASE_NAME']}"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     #token expiration is currently set to half a day
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = os.environ['TOKEN_EXPIRATION']
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ['TOKEN_EXPIRATION'])
     app.config['SECRET_KEY'] = os.environ['JWT']
 
     #set upload directory
@@ -50,7 +50,8 @@ def create_app():
     mail.init_app(app)
 
     # Cross origin init
-    CORS(app)
+    CORS(app, support_credentials=True)
+
     
     with app.app_context():
         # import blueprints
