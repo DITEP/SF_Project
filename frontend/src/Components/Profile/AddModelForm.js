@@ -12,7 +12,8 @@ class AddModelForm extends React.Component {
             name:"",
             modelClass:"HAN",
             file:null,
-            output:"SF"
+            output:"SF",
+            fileUploadError:false
         }
 	}
 
@@ -21,17 +22,16 @@ class AddModelForm extends React.Component {
     }
 
     FileUploader = ({onFileSelect}) => {
-        const fileInput = useRef(null)
-    
         const handleFileInput = (e) => {
             // handle validations
             onFileSelect(e.target.files[0])
         }
-    
+        const {t} = this.props;
         return (
             <div className="file-uploader">
-                <input type="file" onChange={handleFileInput}/>
-                <button onClick={e => fileInput.current && fileInput.current.click()} className="btn btn-primary"/>
+                <label for="file_upload">{t('models.fileUpload')}:</label>
+                <br/>
+                <input id="file_upload" type="file" onChange={handleFileInput}/>
             </div>
         )
     }
@@ -59,37 +59,53 @@ class AddModelForm extends React.Component {
         formData.append("name", this.state.name);
         formData.append("modelClass", this.state.modelClass);
         formData.append("output", this.state.output);
-        console.log(formData)
-        this.apiClient.sendModelForm(formData)
+        console.log(formData);
+        this.apiClient.sendModelForm(formData).then((data)=> {
+            console.log(data)
+            this.props.formSubmitted()
+        }).catch((err)=> {
+            this.props.raiseFileUploadError();
+        })
     };
   
 	render () {
     const { t } = this.props;
     return(
         <div>
+            
             <form onSubmit={this.submitForm}>
+                <label for="name">{t('models.formname')}:</label>
+                <br/>
                 <input
+                id="name"
                 type="text"
                 name="name"
                 value={this.state.name}
                 onChange={this.handleChange}
                 />
+                <br/>
 
-                <select name="modelClass" value={this.state.modelClass} onChange={this.handleChange}>            
+                <label for="class_select">{t('models.formClassSelect')}:</label>
+                <br/>
+                <select id="class_select" name="modelClass" value={this.state.modelClass} onChange={this.handleChange}>            
                     <option value="HAN">HAN</option>
                     <option value="RF">Random Forest</option>
                 </select>
+                <br/>
 
-                <select name="output" value={this.state.output} onChange={this.handleChange}>            
+                <label for="output_select">{t('models.formOutputSelect')}:</label>
+                <br/>
+                <select id="output_select" name="output" value={this.state.output} onChange={this.handleChange}>            
                     <option value="SF">Screen Fail</option>
                     <option value="OS">Patient OS</option>
                 </select>
+                <br/>
 
                 <this.FileUploader
                 onFileSelect={(file) => this.setSelectedFile(file)}
                 />
-
-                <input type="submit" value="Envoyer" />
+                <br/>
+                <input type="submit" value="Envoyer" className="btn btn-primary" />
             </form>
         </div>
     )

@@ -17,6 +17,7 @@ from models.Model import Model
 from models.Result import Result
 
 from controllers.han_pred import han_inference
+from controllers.rf_pred import rf_inference
 
 import time
 import os
@@ -53,7 +54,7 @@ def logout():
     jti = get_raw_jwt()['jti']
     token = {}
     token['expiredToken'] = jti
-    token['createdAt'] = datetime.utcnow()
+    token['createdAt'] = time.datetime.utcnow()
     try:
         return jsonify({"msg": "Successfully logged out"}), 200
     except:
@@ -63,11 +64,11 @@ def logout():
 @jwt_required
 def checkAuth():
   try:
-    token = request.headers.get('Authorization')
+    #token = request.headers.get('Authorization')
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
   except:
-    return jsonify({'ok': False, 'message': 'invalid username or password'}), 401
+    return jsonify({'ok': False, 'message': 'invalid username or password', "error":str(error)}), 401
 
 
 ### User
@@ -116,7 +117,7 @@ def submitPred():
             #check if prediction already made with the model
             existingResult = Result.query.filter_by(reportid=existingReport.id,modelid=model.id).first()
             if existingResult:
-                return jsonify({'ok': False, 'message': 'Prediction already in database!'}), 409
+                return jsonify({'ok': False, 'message': 'Prediction already in database!', "error":str(error)}), 409
             else:
                 #submit prediction to queue
                 return submit_to_queue(data['userID'],existingReport.id,model.id)
@@ -129,7 +130,7 @@ def submitPred():
             return submit_to_queue(data['userID'],newReport.id,model.id)
     except Exception as error:
         print(error)
-        return jsonify({'ok': False, 'message': 'Error during prediction submit!'}), 400
+        return jsonify({'ok': False, 'message': 'Error during prediction submit!', "error":str(error)}), 400
 
 def submit_to_queue(userID,reportID,modelID):
     newPred = Queue(userid=userID,reportid=reportID,modelid=modelID)
@@ -143,7 +144,7 @@ def submit_to_queue(userID,reportID,modelID):
 def predict():
     try:
         data = request.get_json()
-        model = Model.query.filter_by(type=data["model"],toUse=True).first()
+        model = Model.query.filter_by(modelClass=data["model"],toUse=True).first()
         userid = data["userID"]
 
         #Get information from queue
@@ -154,10 +155,11 @@ def predict():
         
         #Make the prediction according to model
         if model.name =="HAN":
-            print("HAN PREDICT")
+            print("HAN PREDICTION")
             return han_predict(report["text"],model.filename)
         
         if model.name =="RF":
+            print("RF PREDICTION")
             return rf_predict(report["text"],model.filename)
 
 
@@ -188,7 +190,7 @@ def han_predict(text,model_file):
         
 def rf_predict(text,model_file):
     try:
-        result = 0
+        result = rf_inference(text,model_file)
         
         return jsonify({"ok":True,"message":"RF prediction","result":result}), 200
     except Exception as error:
@@ -228,32 +230,40 @@ def removeJob():
 
 
 ### Patients
-@routes.route('/patients', methods=['GET'])
-def patient_list():
+@routes.route('/crlist', methods=['GET'])
+def patients_list():
     try:
-        patients = Result.query.all()
-        patients_sorted = sorted(patients,key=lambda result:result.report.datecr,reverse=True)
-        patients_dict = [patient_sorted.to_dict() for patient_sorted in patients_sorted]
-        return jsonify(patients_dict), 200
+        crlist = Report.query.all()
+        crlist_sorted = sorted(crlist,key=lambda cr:cr.datecr,reverse=True)
+        crlist_dict = [crlist_sorted.to_dict() for crlist_sorted in crlist_sorted]
+        return jsonify(crlist_dict), 200
     except Exception as error:
         print("Unexpected Error: {}".format(error))
-        return jsonify({"ok":False,"message": "Error loading patients", "error":str(error)}), 400
-    
-@routes.route('/attention', methods=['POST'])
-def attentionValue():
-    return han_predict(request.get_json()['text'])
+        return jsonify({"ok":False,"message": "Error loading cr", "error":str(error)}), 400
 
-
-@routes.route('/updatePatient',methods=["POST"])
+@routes.route('/updatecr',methods=["POST"])
 def updatePatient():
     try:
         data = request.get_json()
-        Result.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
+        Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
         db.session.commit()
         return jsonify({'ok': True, 'message': 'Patient Updated successfully!'}), 200
     except Exception as error:
         print("Unexpected Error: {}".format(error))
-        return jsonify({'ok': False, 'message': 'Error updating patient!'}), 400
+        return jsonify({'ok': False, 'message': 'Error updating patient!', "error":str(error)}), 400
+
+
+@routes.route('/results', methods=['GET'])
+def results_list():
+    try:
+        results = Result.query.all()
+        results_sorted = sorted(results,key=lambda result:result.report.datecr,reverse=True)
+        results_dict = [result_sorted.to_dict() for result_sorted in results_sorted]
+        return jsonify(results_dict), 200
+    except Exception as error:
+        print("Unexpected Error: {}".format(error))
+        return jsonify({"ok":False,"message": "Error loading results", "error":str(error)}), 400
+
 
 ### MODELS
 
@@ -263,6 +273,10 @@ def upload_file():
         f = request.files['file']
         data = request.form
         filename = secure_filename(f.filename)
+        ACCEPTED_FILE_TYPES = ["hd5","pkl"]
+        if (filename.split(".")[-1] not in ACCEPTED_FILE_TYPES):
+            print(filename.split(".")[-1])
+            raise Exception(f"File type not accepted, only accepted files are those listed: {ACCEPTED_FILE_TYPES}")
         f.save(os.path.join(os.environ['BACKEND_UPLOAD_FOLDER'],filename))
         print(filename)
         #remove previously used algorithm for this class
@@ -275,17 +289,18 @@ def upload_file():
         return jsonify({'ok': True, 'message': 'File uploading successfully!'}), 200
     except Exception as error:
         print(error)
-        return jsonify({'ok': False, 'message': 'Error uploading file'}), 400
+        return jsonify({'ok': False, 'message': 'Error uploading file', "error":str(error)}), 400
 
 @routes.route("/getmodels", methods=['GET'])
 def get_models():
     try:
         #Return all models in db
         models = Model.query.all()
-        models_dict = [model.to_dict() for model in models]
+        ordered_models = sorted(models,key= lambda model:model.modelClass)
+        models_dict = [model.to_dict() for model in ordered_models]
         return jsonify(models_dict), 200
     except Exception as error:
-        return jsonify({'ok': False, 'message': 'Error accessing db for models'}), 400
+        return jsonify({'ok': False, 'message': 'Error accessing db for models', "error":str(error)}), 400
 
 @routes.route("/selectmodel", methods=['POST'])
 def select_model():
@@ -293,8 +308,9 @@ def select_model():
         data = request.get_json()
         #Modify DB
         Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))
-        Model.query.filter_by(id=data["modelid"]).update(dict(toUse=True))
+        Model.query.filter_by(id=data["id"]).update(dict(toUse=True))
+        db.session.commit()
         return jsonify({'ok': True, 'message': 'New model selected!'}), 200
     except Exception as error:
-        return jsonify({'ok': False, 'message': 'Error selecting model'}), 400
+        return jsonify({'ok': False, 'message': 'Error selecting model', "error":str(error)}), 400
 

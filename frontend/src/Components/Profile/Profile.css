@@ -1,0 +1,13 @@
+.error-text{
+    margin-top: 20px;
+    color: white;
+    text-align: left;
+    width: 100%;
+    font-size:1.5rem;
+    font-weight: 400;
+}
+
+.error-container{
+    background-color: #f26722;
+    border-radius: 1rem;
+}

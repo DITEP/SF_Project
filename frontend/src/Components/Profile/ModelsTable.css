@@ -1,0 +1,99 @@
+.additional-info {
+position: absolute;
+top: 25%;
+left: 25%;
+width: 50%;
+height: 0;
+padding: 16px;
+border: 2px solid lightgray;
+background-color: white;
+z-index: 1002;
+border-radius: 3px;
+max-height: 0;
+transition: max-height 0.15s ease-out;
+opacity: 0;
+}
+
+.popup-header {
+height: 15%;
+display: flex;
+justify-content: space-between;
+}
+
+.popup-body {
+height: 50%;
+font-size: 15pt;
+}
+
+.popup-footer {
+height: 15%
+}
+
+.submit-popup-button {
+margin-bottom: 10px;
+}
+
+.cancel-popup-button {
+background-color: #ce4200;
+border-color: #ce4200;
+}
+
+.cancel-popup-button:hover {
+background-color: #730404;
+border-color: #730404;
+}
+
+.close-popup:before {
+content: "\2716";
+}
+
+.close-popup {
+cursor: pointer;
+}
+
+.close-popup:hover {
+transition: all 0.3s;
+color: maroon;
+}
+
+.show-popup {
+height: 50%;
+max-height: 500px;
+transition: max-height 0.25s ease-in;
+opacity: 1;
+}
+
+.popup-success {
+margin-top: 20px;
+color: darkgreen;
+}
+
+.popup-error {
+margin-top: 20px;
+color: maroon;
+}
+  
+
+
+.check{
+cursor: pointer;
+margin-right: 0.8rem;
+margin-left: 0.3rem;
+}
+.table-container{
+max-width:None;
+width:100%;
+}
+
+.tabletext{
+text-align:left;
+font-family: "Avenir";
+}
+
+.table{
+font-size:large;
+}
+
+.rm-1em{
+  margin-right: 1em;
+}

@@ -10,13 +10,18 @@ import ModelsTable from './ModelsTable';
 import AddModelForm from "./AddModelForm";
 
 class Profile extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
+  constructor(props){
+    super(props)
+    this.state = {
       userID: -1,
-      isAdmin: false
+      isAdmin: false,
+
+      fileUploadError:false
     };
-	}
+    this.modelsTable = React.createRef();
+  }
+		
+
 
   async componentDidMount() {
     this.apiClient = new APIClient();
@@ -42,6 +47,15 @@ class Profile extends React.Component {
       })
   }
 
+  refreshTable = () =>{
+    this.setState({fileUploadError:false})
+    this.modelsTable.current.resetTable();
+  }
+
+  raiseFileUploadError = () => {
+    this.setState({fileUploadError:true})
+  }
+
 	render () {
     const { t } = this.props;
     const isAdmin = this.state.isAdmin;
@@ -49,8 +63,16 @@ class Profile extends React.Component {
         <div className="container">
           {isAdmin && 
             (<div> 
-              <ModelsTable/>
-              <AddModelForm/>
+              <h2>{t("models.currentModels")}</h2>
+              <ModelsTable ref={this.modelsTable}/>
+              {/* ERRORS */}
+              <div className={'container error-container ' + (this.state.fileUploadError ? '' : 'hidden')}>
+              <span className='error-text'>
+                  {t('messages.fileuploaderror')}
+              </span>
+              </div>
+              <h2>{t("models.addModelForm")}</h2>
+              <AddModelForm raiseFileUploadError={this.raiseFileUploadError} formSubmitted={this.refreshTable}/>
             </div>)
           }
         </div>

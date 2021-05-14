@@ -64,7 +64,8 @@
     "emailchangesuccess": "Votre email a bien été changée. Merci de vous connecter à nouveau avec vos identifiants.",
     "notauthorized": "Vous devez être connecté pour voir cette page.",
     "registrationsuccess": "Votre compte a bien été créé. Merci de vous connecter à nouveau avec vos identifiants.",
-    "newpredictionsuccess": "Prediction soumise avec succès, merci d'attendre que le calcul s'effectue."
+    "newpredictionsuccess": "Prediction soumise avec succès, merci d'attendre que le calcul s'effectue.",
+    "fileuploaderror": "Erreur lors du téléchargement du fichier sur le serveur. Merci de vérifier l'extension ou le nom, il doit être différent d'un nom existent"
   },
   "prediction": {
     "formtitle": "Copiez le compte rendu ici",
@@ -97,7 +98,7 @@
   },
   "rfprediction":{
     "pagetitle" : "Prédiction modèle RF",
-    "resultHeader":"Survie du patient :"
+    "resultHeader":"Probabilité de Screen Fail"
   },
   "profile": {
     "changemail": "Change email address",
@@ -121,6 +122,20 @@
     "passwordnotsecureerror": "Password must be at least 10 characters.",
     "othererror": "An error occured. Please try again later.",
     "emailchangeinfo": "Please note that you will need to use you new email address to sign into votre account"
+  },
+  "models":{
+    "currentModels":"Modèles actuellement sur le serveur",
+    "tablemodelClass": "Type de modèle",
+    "tablemodelname": "Nom du modèle",
+    "tablefilename": "Nom du fichier",
+    "tabletoUse": "Utiliser ce fichier lors des prédictions",
+    "toUseCheck": "Selectionner ce modèle",
+    "itemtoUse": "Modèle en utilisation pour ce type",
+    "addModelForm": "Ajouter un nouveau modèle",
+    "formname": "Entrez le nom du modèle",
+    "formClassSelect": "Selectionnez le type du modèle",
+    "formOutputSelect": "Selectionnez l'output du modèle",
+    "fileUpload" : "Choisir le fichier à télécharger sur le serveur"
   },
   "history": {
     "predictionrunning": "Prediction is running",

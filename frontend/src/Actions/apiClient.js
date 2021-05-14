@@ -78,6 +78,10 @@ class APIClient {
   getModels(){
     return this.perform('get','/getmodels')
    }
+
+  selectModel(model){
+    return this.perform('post','/selectmodel',model)
+  }
   
 
   // Perform takes in the mehthod, route, data and creates a new client
