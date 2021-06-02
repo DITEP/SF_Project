@@ -14,6 +14,7 @@ def rf_inference(mytext,model_file):
         import numpy as np
 
         data_dir = "./controllers/data"
+        cluster_file = "clusters.txt"
         
         params = {
             'NB_CLUSTERS': 140,
@@ -39,12 +40,13 @@ def rf_inference(mytext,model_file):
                 if len(tok_str)!=0:
                     preprocessed_text.append(tok_str)
         if len(preprocessed_text)<50:
-            raise Exception("Text is to short")
+            raise Exception("Text is too short")
 
         ##TURN TEXT TO CLUSTER VECTOR
-        with open(os.path.join(data_dir,model_file),'r',encoding="utf8") as f:
+        with open(os.path.join(data_dir,cluster_file),'r',encoding="utf8") as f:
             cluster_lines = f.readlines()
         clusters = [cluster_line.split(",") for cluster_line in cluster_lines]
+        print(clusters)
         
         transformed_text = np.zeros(params["NB_CLUSTERS"])
         cnt_words=0

@@ -110,7 +110,7 @@ def submitPred():
     try:
         data = request.get_json()
         #get required model from db
-        model = Model.query.filter_by(type=data["model"],toUse=True).first()
+        model = Model.query.filter_by(modelClass=data["model"],toUse=True).first()
         #check if report is already in database
         existingReport = Report.query.filter_by(nip=data['nip'],datecr=data['dateCr']).first()
         if existingReport : 
@@ -154,13 +154,15 @@ def predict():
         db.session.commit()
         
         #Make the prediction according to model
-        if model.name =="HAN":
+        if model.modelClass =="HAN":
             print("HAN PREDICTION")
             return han_predict(report["text"],model.filename)
         
-        if model.name =="RF":
+        if model.modelClass =="RF":
             print("RF PREDICTION")
             return rf_predict(report["text"],model.filename)
+        else:
+            raise Exception("ModelType does not exist")
 
 
     except Exception as error:
@@ -191,6 +193,7 @@ def han_predict(text,model_file):
 def rf_predict(text,model_file):
     try:
         result = rf_inference(text,model_file)
+        print(result)
         
         return jsonify({"ok":True,"message":"RF prediction","result":result}), 200
     except Exception as error:
@@ -220,7 +223,7 @@ def checkQueue():
 def removeJob():
     try:
         userData = request.get_json()
-        model = Model.query.filter_by(type=userData["model"],toUse=True).first()
+        model = Model.query.filter_by(modelClass=userData["model"],toUse=True).first()
         Queue.query.filter_by(userid=userData['userID'],modelid=model.id).delete()
         db.session.commit()
         return jsonify({"ok":True,"message":'Job successfully deleted from queue'}), 200
