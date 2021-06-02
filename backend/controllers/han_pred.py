@@ -31,8 +31,8 @@ def han_inference(mytext,model_file):
         
 
         params = {
-            'MAX_WORDS_PER_SENT': 50,
-            'MAX_SENT': 60,
+            'MAX_WORDS_PER_SENT': 40,
+            'MAX_SENT': 80,
         }
 
         # loading tokeniser

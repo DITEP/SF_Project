@@ -10,3 +10,5 @@ flask-jwt-extended==3.24.0
 flask-mail==0.9.1
 spacy
 stop-words
+PyJWT==1.7.1
+h5py < 3.0.0

@@ -143,6 +143,7 @@ def submit_to_queue(userID,reportID,modelID):
 @routes.route('/predict', methods=['POST'])
 def predict():
     try:
+        print("PREDICT REQUEST")
         data = request.get_json()
         model = Model.query.filter_by(modelClass=data["model"],toUse=True).first()
         userid = data["userID"]

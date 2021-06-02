@@ -56,6 +56,8 @@ def create_app():
     with app.app_context():
         # import blueprints
         from routes import routes
+        
+        CORS(routes)
 
         # register blueprints
         app.register_blueprint(routes)
