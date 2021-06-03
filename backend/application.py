@@ -6,7 +6,7 @@ from flask_mail import Mail
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
-from controllers.add_models import add_models
+
 
 import os
 import time
@@ -59,6 +59,7 @@ def create_app():
     with app.app_context():
         # import blueprints
         from routes import routes
+        from controllers.add_models import add_models
         
         CORS(routes)
 
