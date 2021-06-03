@@ -114,13 +114,8 @@ def submitPred():
         #check if report is already in database
         existingReport = Report.query.filter_by(nip=data['nip'],datecr=data['dateCr']).first()
         if existingReport : 
-            #check if prediction already made with the model
-            existingResult = Result.query.filter_by(reportid=existingReport.id,modelid=model.id).first()
-            if existingResult:
-                return jsonify({'ok': False, 'message': 'Prediction already in database!', "error":str(error)}), 409
-            else:
-                #submit prediction to queue
-                return submit_to_queue(data['userID'],existingReport.id,model.id)
+            #submit prediction to queue
+            return submit_to_queue(data['userID'],existingReport.id,model.id)
         #report not in db, add it first then submit pred to queue
         else:
             newReport = Report(userid=data['userID'],text=data["text"],nip=data["nip"],datecr=data["dateCr"])
@@ -145,30 +140,39 @@ def predict():
     try:
         print("PREDICT REQUEST")
         data = request.get_json()
-        model = Model.query.filter_by(modelClass=data["model"],toUse=True).first()
+        model = Model.query.filter_by(modelClass=data["model"],toUse=True).first().to_dict()
         userid = data["userID"]
 
         #Get information from queue
-        report = Queue.query.filter_by(userid=userid,modelid=model.id).first().to_dict()['report']
+        report = Queue.query.filter_by(userid=userid,modelid=model["id"]).first().to_dict()['report']
         #Remove user from queue  
-        Queue.query.filter_by(userid=userid,modelid=model.id).delete()
-        db.session.commit()
+        Queue.query.filter_by(userid=userid,modelid=model["id"]).delete()
         
         #Make the prediction according to model
-        if model.modelClass =="HAN":
+        if model["modelClass"] =="HAN":
             print("HAN PREDICTION")
-            return han_predict(report["text"],model.filename)
+            res,status =  han_predict(report["text"],model["filename"])
         
-        if model.modelClass =="RF":
+        if model["modelClass"] =="RF":
             print("RF PREDICTION")
-            return rf_predict(report["text"],model.filename)
+            res,status = rf_predict(report["text"],model["filename"])
         else:
             raise Exception("ModelType does not exist")
+        
+        #Add result to db if it does not already exist
+        existingResult = Result.query.filter_by(modelid=model["id"],reportid=report["id"]).first()
+        if not existingResult:
+            newResult = Result(modelid=model["id"],reportid=report["id"],userid=userid,valueComputed=model["output"],result=float(res["result"]),display=True)
+            db.session.add(newResult)
 
+        #Commit changes
+        db.session.commit()
+        #send response
+        return res,status
 
     except Exception as error:
         #Delete from queue when an error occur
-        Queue.query.filter_by(userid=userid,modelid=model.id).delete()
+        Queue.query.filter_by(userid=userid,modelid=model["id"]).delete()
         db.session.commit()
         print(error)
         return jsonify({"ok":False,"message":"Unexpected Error {}. Deleted user position in queue".format(error)}), 400
@@ -186,6 +190,8 @@ def han_predict(text,model_file):
         res['sentence_attentions'] = sentence_attentions.tolist()
         res['word_attentions'] = word_attentions.tolist()
         
+        #ADD to result db
+
         return jsonify(res), 200
     except Exception as error:
         print(error)
@@ -194,7 +200,6 @@ def han_predict(text,model_file):
 def rf_predict(text,model_file):
     try:
         result = rf_inference(text,model_file)
-        print(result)
         
         return jsonify({"ok":True,"message":"RF prediction","result":result}), 200
     except Exception as error:
@@ -249,7 +254,12 @@ def patients_list():
 def updatePatient():
     try:
         data = request.get_json()
-        Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
+        if data['updateScreenfail']:
+            Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
+        elif data['updateOs']:
+            Report.query.filter_by(id=data['id']).update(dict(os=data['os']))
+        elif data['updateBoth']:
+            Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail'],os=data['os']))
         db.session.commit()
         return jsonify({'ok': True, 'message': 'Patient Updated successfully!'}), 200
     except Exception as error:
