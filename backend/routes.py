@@ -23,7 +23,6 @@ import time
 import os
 
 routes = Blueprint('routes', __name__)
-db.create_all()
 ###
 # Defines all routes used in the backend, checks for authentication (jwt_required), passes data to appropriate controller
 ###
@@ -289,7 +288,6 @@ def upload_file():
         filename = secure_filename(f.filename)
         ACCEPTED_FILE_TYPES = ["hd5","pkl"]
         if (filename.split(".")[-1] not in ACCEPTED_FILE_TYPES):
-            print(filename.split(".")[-1])
             raise Exception(f"File type not accepted, only accepted files are those listed: {ACCEPTED_FILE_TYPES}")
         f.save(os.path.join(os.environ['BACKEND_UPLOAD_FOLDER'],filename))
         print(filename)

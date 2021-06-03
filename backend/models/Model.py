@@ -7,7 +7,7 @@ class Model(db.Model):
     modelClass = db.Column(db.String(20), unique=False, nullable=False)
 
     output = db.Column(db.String(20), unique=False, nullable=True)
-    filename = db.Column(db.String(50), unique=False, nullable=False)
+    filename = db.Column(db.String(50), unique=True, nullable=False)
 
     toUse = db.Column(db.Boolean,unique=False,nullable=True)
     

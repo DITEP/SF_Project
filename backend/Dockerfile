@@ -11,4 +11,4 @@ CMD pip install -r requirements.txt \
 #Install the corresponding nltk data
 && python -m nltk.downloader punkt \
 #Run the app
-&& python run.py
+&& python run.py 

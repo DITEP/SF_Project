@@ -5,6 +5,9 @@ from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+
+from controllers.add_models import add_models
+
 import os
 import time
 
@@ -66,5 +69,8 @@ def create_app():
         # Create tables for our models
         db.create_all()
         print("create db")
+
+        #add models in data to db
+        add_models(db)
 
         return app
