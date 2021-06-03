@@ -17,7 +17,7 @@ def rf_inference(mytext,model_file):
         cluster_file = "clusters.txt"
         
         params = {
-            'NB_CLUSTERS': 140,
+            'NB_CLUSTERS': 200,
         }
 
         ##PREPROCESS text
@@ -46,7 +46,6 @@ def rf_inference(mytext,model_file):
         with open(os.path.join(data_dir,cluster_file),'r',encoding="utf8") as f:
             cluster_lines = f.readlines()
         clusters = [cluster_line.split(",") for cluster_line in cluster_lines]
-        print(clusters)
         
         transformed_text = np.zeros(params["NB_CLUSTERS"])
         cnt_words=0
@@ -65,10 +64,9 @@ def rf_inference(mytext,model_file):
         with open(os.path.join(data_dir,model_file), 'rb') as file:
             rf_model = pickle.load(file)
 
-        #predict patient SF/SSD
-        result = rf_model.predict(transformed_text)
-        
-        return result
+        #predict patient SF/SSD (reshape because predict expects a list of test samples)
+        result = rf_model.predict_proba(transformed_text.reshape(1,-1))
+        return float(result[0][1])
     except Exception as error:
         print(error)
         return -1

@@ -150,24 +150,24 @@ def predict():
         #Make the prediction according to model
         if model["modelClass"] =="HAN":
             print("HAN PREDICTION")
-            res,status =  han_predict(report["text"],model["filename"])
+            response,status,result =  han_predict(report["text"],model["filename"])
         
         if model["modelClass"] =="RF":
             print("RF PREDICTION")
-            res,status = rf_predict(report["text"],model["filename"])
+            response,status,result = rf_predict(report["text"],model["filename"])
         else:
             raise Exception("ModelType does not exist")
         
         #Add result to db if it does not already exist
         existingResult = Result.query.filter_by(modelid=model["id"],reportid=report["id"]).first()
         if not existingResult:
-            newResult = Result(modelid=model["id"],reportid=report["id"],userid=userid,valueComputed=model["output"],result=float(res["result"]),display=True)
+            newResult = Result(modelid=model["id"],reportid=report["id"],userid=userid,valueComputed=model["output"],result=result,display=True)
             db.session.add(newResult)
-
+        print(result)
         #Commit changes
         db.session.commit()
         #send response
-        return res,status
+        return response,status
 
     except Exception as error:
         #Delete from queue when an error occur
@@ -191,19 +191,19 @@ def han_predict(text,model_file):
         
         #ADD to result db
 
-        return jsonify(res), 200
+        return jsonify(res), 200 , result
     except Exception as error:
         print(error)
-        return jsonify({"ok":False,"message": "Error during Prediction", "error":"Unexpected Error: {}".format(error)}), 400
+        return jsonify({"ok":False,"message": "Error during Prediction", "error":"Unexpected Error: {}".format(error)}), 400 , -1
         
 def rf_predict(text,model_file):
     try:
         result = rf_inference(text,model_file)
         
-        return jsonify({"ok":True,"message":"RF prediction","result":result}), 200
+        return jsonify({"ok":True,"message":"RF prediction","result":result}), 200 , result
     except Exception as error:
         print(error)
-        return jsonify({"ok":False,"message": "Error during Prediction", "error":"Unexpected Error: {}".format(error)}), 400
+        return jsonify({"ok":False,"message": "Error during Prediction", "error":"Unexpected Error: {}".format(error)}), 400 , -1
     
 
 ### Queue
