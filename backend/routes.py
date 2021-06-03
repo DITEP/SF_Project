@@ -253,11 +253,11 @@ def patients_list():
 def updatePatient():
     try:
         data = request.get_json()
-        if data['updateScreenfail']:
+        if 'updateScreenfail' in data:
             Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
-        elif data['updateOs']:
+        elif 'updateOS' in data:
             Report.query.filter_by(id=data['id']).update(dict(os=data['os']))
-        elif data['updateBoth']:
+        elif 'updateBoth' in data:
             Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail'],os=data['os']))
         db.session.commit()
         return jsonify({'ok': True, 'message': 'Patient Updated successfully!'}), 200
@@ -289,8 +289,10 @@ def upload_file():
         ACCEPTED_FILE_TYPES = ["hd5","pkl"]
         if (filename.split(".")[-1] not in ACCEPTED_FILE_TYPES):
             raise Exception(f"File type not accepted, only accepted files are those listed: {ACCEPTED_FILE_TYPES}")
-        f.save(os.path.join(os.environ['BACKEND_UPLOAD_FOLDER'],filename))
-        print(filename)
+        if ("BACKEND_UPLOAD_FOLDER" in os.environ):
+            f.save(os.path.join(os.environ['BACKEND_UPLOAD_FOLDER'],filename))
+        else:
+            f.save(os.path.join("controllers/data",filename))
         #remove previously used algorithm for this class
         if (len(Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).all()) > 0):
             Model.query.filter_by(toUse=True,modelClass=data["modelClass"]).update(dict(toUse=False))

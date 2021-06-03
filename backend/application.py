@@ -30,20 +30,32 @@ def create_app():
     app.isCalculating = False
     #port and adress for db connection is servicename:3306 because backend connects through the docker-compose network.
     #This can be changed in the docker-compose.yml file by removing the link, but it is not advised.
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{os.environ['SQL_USERNAME']}:{os.environ['MYSQL_ROOT_PASSWORD']}@{os.environ['SQL_SERVICENAME']}:3306/{os.environ['DATABASE_NAME']}"
+    if ("SQL_USERNAME" in os.environ and "SQL_PASSWORD" in os.environ and "SQL_SERVICENAME" in os.environ and "DATABASE_NAME" in os.environ):
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{os.environ['SQL_USERNAME']}:{os.environ['SQL_PASSWORD']}@{os.environ['SQL_SERVICENAME']}:3306/{os.environ['DATABASE_NAME']}"
+    else:
+        app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:root@localhost:3306/sfproject"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    #token expiration is currently set to half a day
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ['TOKEN_EXPIRATION'])
-    app.config['SECRET_KEY'] = os.environ['JWT']
+
+    #JW token expiration
+    if ("TOKEN_EXPIRATION" in os.environ):
+        app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.environ['TOKEN_EXPIRATION'])
+    else:
+        app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 86400
+
+    #JW Token secret key
+    if ("JWT" in os.environ):
+        app.config['SECRET_KEY'] = os.environ['JWT']
+    else:
+        app.config['SECRET_KEY']
 
     #set upload directory
-    app.config['UPLOAD_FOLDER'] = os.environ['BACKEND_UPLOAD_FOLDER']
+    if ("BACKEND_UPLOAD_FOLDER" in os.environ):
+        app.config['UPLOAD_FOLDER'] = os.environ['BACKEND_UPLOAD_FOLDER']
+    else:
+        app.config['UPLOAD_FOLDER'] = "controllers/data"
     
     #db init
     db.init_app(app)
-    
-    
-    
     
     # JSON web token init
     jwt.init_app(app)

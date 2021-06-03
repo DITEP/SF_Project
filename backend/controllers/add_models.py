@@ -2,8 +2,11 @@ import os
 from models.Model import Model
 
 def add_models(db):
-    #Read files in controllers/data
-    files = os.listdir(os.environ['BACKEND_UPLOAD_FOLDER'])
+    #Read files in os.environ['BACKEND_UPLOAD_FOLDER'] (default:controllers/data)
+    if ("BACKEND_UPLOAD_FOLDER" in os.environ):
+        files = os.listdir(os.environ['BACKEND_UPLOAD_FOLDER'])
+    else:
+        files = os.listdir("controllers/data")
     HAN_FILE_TYPES = ["hd5"]
     RF_FILE_TYPES = ["pkl"]
     han_cnt = 0
