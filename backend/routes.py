@@ -253,11 +253,11 @@ def patients_list():
 def updatePatient():
     try:
         data = request.get_json()
-        if 'updateScreenfail' in data:
+        if 'screenfail' in data:
             Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail']))
-        elif 'updateOS' in data:
+        elif 'os' in data:
             Report.query.filter_by(id=data['id']).update(dict(os=data['os']))
-        elif 'updateBoth' in data:
+        else:
             Report.query.filter_by(id=data['id']).update(dict(screenfail=data['screenfail'],os=data['os']))
         db.session.commit()
         return jsonify({'ok': True, 'message': 'Patient Updated successfully!'}), 200

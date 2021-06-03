@@ -54,15 +54,11 @@ class APIClient {
   
   /*** ///  Maps to patients controller  /// ***/
   getPatients() {
-    return this.perform('get', '/patients');
-  }
-  
-  getAttention(text){
-    return this.perform('post', '/attention', text)
+    return this.perform('get', '/crlist');
   }
   
   updatePatient(patient){
-    return this.perform('post', '/updatePatient', patient)
+    return this.perform('post', '/updatecr', patient)
   }
 
   /*** /// Mail /// ***/
