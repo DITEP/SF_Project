@@ -27,8 +27,7 @@ function App() {
               </header>
             
              <Switch>
-               <Route path="/" exact component={HANPrediction} />
-               <Route path="/infos" exact component={Info} />
+               <Route path="/" exact component={RFPrediction} />
                <Route path="/register" component={Register} />
                <Route path="/login" component={Login} />
                <Route path="/hanprediction" component={HANPrediction} />
